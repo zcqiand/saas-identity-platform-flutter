@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "suite_version": "0.6.0",
+  "project": "saas-identity-platform-flutter",
+  "stack": "flutter",
+  "gates": {
+    "L1": {
+      "name": "格式（dart format）",
+      "cmd": [
+        "dart",
+        "format",
+        "--output=none",
+        "--set-exit-if-changed",
+        "."
+      ],
+      "fix": "先装 Flutter SDK 3.47.6（捆绑 Dart，README 快速开始）。跑 dart format . 落盘后再 commit；格式抖动说明编辑器插件与本 SDK 不一致，以 SDK 为准。"
+    },
+    "L2": {
+      "name": "构建（web release）",
+      "cmd": [
+        "flutter",
+        "build",
+        "web",
+        "--release"
+      ],
+      "fix": "先装 Flutter SDK 3.47.6（README 快速开始）。编译错回代码修；SDK 环境问题 exit 2 停下问人。APK 构建是打 tag 前手动动作，不进本门。"
+    },
+    "L3": {
+      "name": "静态分析（含类型检查）",
+      "cmd": [
+        "flutter",
+        "analyze"
+      ],
+      "fix": "先装 Flutter SDK 并 flutter pub get。error 必修；info 级别按 analysis_options 严格档收敛。"
+    },
+    "L4": {
+      "name": "测试",
+      "cmd": [
+        "flutter",
+        "test"
+      ],
+      "fix": "先让测试变绿，再谈重构。若测试本身有误，改测试前必须先说明理由。"
+    }
+  },
+  "trace_cmd": [
+    "python",
+    "scripts/trace_cmd.py"
+  ],
+  "trace_env": {},
+  "source_dirs": [
+    "lib"
+  ],
+  "test_dirs": [
+    "test"
+  ]
+}

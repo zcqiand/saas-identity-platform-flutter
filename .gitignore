@@ -1,0 +1,28 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+# pubspec.lock 不忽略：应用仓必须提交 lock（dart 官方惯例），只有 package 才忽略
+
+# 平台（flutter create 生成后按需入库 android/ web/；这里只挡产物）
+android/.gradle/
+android/local.properties
+android/key.properties
+web/favicon.png.tmp
+
+# openapi-generator 临时区
+.openapi-tmp/
+
+# suite 运行态（.state/ 里 trace/gate/alignment 不入仓，marker 入仓）
+.state/trace.json
+.state/gate.json
+.state/gate.partial.json
+.state/alignment.json
+.state/tree-change.json
+
+# IDE
+.idea/
+.vscode/
+*.iml
