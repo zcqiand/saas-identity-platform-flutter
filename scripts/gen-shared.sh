@@ -62,7 +62,7 @@ cp "$ROOT/.openapi-tmp/dart/lib/saas_shared_generated.dart" "$ROOT/lib/generated
 # 生成物以生成包名自 import（package:saas_shared_generated/src/...，39 处文件实测）；
 # 进宿主包后该前缀失效，确定性 sed 改写到宿主 generated/ 路径（幂等：对已改写文本零影响）。
 LC_ALL=C.UTF-8 grep -rl 'package:saas_shared_generated/src/' "$ROOT/lib/generated" \
-  | xargs sed -i 's#package:saas_shared_generated/src/#package:saas_identity_platform_flutter/generated/#g'
+  | xargs -r sed -i 's#package:saas_shared_generated/src/#package:saas_identity_platform_flutter/generated/#g'
 # 守卫前置：包名自 import 残留 = 改写漏网（生成器换了 import 形状），停下查。
 if grep -rq 'package:saas_shared_generated/' "$ROOT/lib/generated"; then
   echo "[gen-shared] fail-loud：残留 package:saas_shared_generated/ 自 import（改写规则失配）" >&2
