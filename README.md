@@ -16,8 +16,7 @@ API 面只认 `saas-identity-platform-shared` TypeSpec 生成物（openapi.yaml 
 #    解压到无空格路径如 %LOCALAPPDATA%\flutter，PATH 加 flutter\bin）
 flutter doctor
 
-# 2) 平台目录（一次；pubspec 不会被覆盖，git diff review）
-cd output/saas-identity-platform-flutter
+# 2) 平台目录（一次；pubspec 不会被覆盖，git diff review；fresh clone 本仓后即在仓库根，无需 cd）
 flutter create --platforms=android,web --project-name saas_identity_platform_flutter .
 
 # 3) 依赖
@@ -41,7 +40,7 @@ bash scripts/gen-shared.sh
 | Flutter | 3.47.6 stable |
 | Dart | 3.13.5 |
 | 状态管理 | flutter_riverpod 3.4.3 |
-| 网络 | dio 6.0.0 |
+| 网络 | dio 5.11.1 |
 | codegen | openapi-generator 7.25.0 dart-dio |
 | 目标平台 | Android + Web（iOS 缓做） |
 
