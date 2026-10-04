@@ -11,7 +11,10 @@ void main() {
     });
 
     test('非空 base URL 通过', () {
-      expect(() => AppConfig.validateBaseUrl('http://localhost:5101'), returnsNormally);
+      expect(
+        () => AppConfig.validateBaseUrl('http://localhost:5101'),
+        returnsNormally,
+      );
     });
   });
 
