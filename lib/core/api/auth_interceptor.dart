@@ -7,10 +7,7 @@ import 'session_guard.dart';
 /// auth 路径排除：登录自身 401（错凭据）不能触发会话失效回路（react 先例）。
 /// 本层不感知 Widget/路由。
 class AuthInterceptor extends Interceptor {
-  AuthInterceptor({
-    required this.readAccessToken,
-    required this.guard,
-  });
+  AuthInterceptor({required this.readAccessToken, required this.guard});
 
   final Future<String?> Function() readAccessToken;
   final SessionGuard guard;
@@ -39,7 +36,8 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401 && !isAuthPath(err.requestOptions.path)) {
+    if (err.response?.statusCode == 401 &&
+        !isAuthPath(err.requestOptions.path)) {
       guard.fire();
     }
     handler.next(err);

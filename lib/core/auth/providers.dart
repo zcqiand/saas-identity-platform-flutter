@@ -13,14 +13,14 @@ import 'token_store.dart';
 /// provider 图：测试经 ProviderScope(overrides:[...]) 整体替换
 /// （dioProvider/tokenStoreProvider/appConfigClientIdProvider 必 override）。
 
-final sessionGuardProvider =
-    Provider<SessionGuard>((ref) => SessionGuard());
+final sessionGuardProvider = Provider<SessionGuard>((ref) => SessionGuard());
 
 final tokenStoreProvider = Provider<TokenStore>((ref) => SecureTokenStore());
 
 /// clientId 编译期常量的可测出口：测试 override 成 'saas-console'。
-final appConfigClientIdProvider =
-    Provider<String>((ref) => AppConfig.saasClientId);
+final appConfigClientIdProvider = Provider<String>(
+  (ref) => AppConfig.saasClientId,
+);
 
 final dioProvider = Provider<Dio>((ref) {
   return buildDio(
@@ -32,5 +32,6 @@ final dioProvider = Provider<Dio>((ref) {
   );
 });
 
-final authApiProvider =
-    Provider<AuthApi>((ref) => AuthApi(ref.watch(dioProvider), standardSerializers));
+final authApiProvider = Provider<AuthApi>(
+  (ref) => AuthApi(ref.watch(dioProvider), standardSerializers),
+);

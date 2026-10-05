@@ -22,10 +22,7 @@ void main() {
     });
 
     test('非空 clientId 通过', () {
-      expect(
-        () => AppConfig.validateClientId('saas-console'),
-        returnsNormally,
-      );
+      expect(() => AppConfig.validateClientId('saas-console'), returnsNormally);
     });
   });
 

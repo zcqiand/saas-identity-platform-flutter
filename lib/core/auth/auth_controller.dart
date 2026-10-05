@@ -43,10 +43,12 @@ class AuthController extends Notifier<AuthState> {
   Future<void> login(String username, String password) async {
     if (state is AuthSubmitting) return;
     state = const AuthSubmitting();
-    final request = LoginRequest((b) => b
-      ..username = username
-      ..password = password
-      ..clientId = _clientId);
+    final request = LoginRequest(
+      (b) => b
+        ..username = username
+        ..password = password
+        ..clientId = _clientId,
+    );
     try {
       final response = await _api.sessionsLogin(loginRequest: request);
       final body = response.data;
@@ -61,7 +63,10 @@ class AuthController extends Notifier<AuthState> {
         return;
       }
       await _store.save(accessToken: access, refreshToken: refresh);
-      state = Authed(userId: body.userId, currentTenantId: body.currentTenantId);
+      state = Authed(
+        userId: body.userId,
+        currentTenantId: body.currentTenantId,
+      );
     } on DioException catch (e) {
       state = AuthFailed(_message(e));
     } catch (_) {
@@ -94,5 +99,6 @@ class AuthController extends Notifier<AuthState> {
   }
 }
 
-final authControllerProvider =
-    NotifierProvider<AuthController, AuthState>(AuthController.new);
+final authControllerProvider = NotifierProvider<AuthController, AuthState>(
+  AuthController.new,
+);

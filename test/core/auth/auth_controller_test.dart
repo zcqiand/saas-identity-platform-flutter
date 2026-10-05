@@ -7,6 +7,7 @@ import 'package:saas_identity_platform_flutter/core/api/session_guard.dart';
 import 'package:saas_identity_platform_flutter/core/auth/auth_controller.dart';
 import 'package:saas_identity_platform_flutter/core/auth/auth_state.dart';
 import 'package:saas_identity_platform_flutter/core/auth/providers.dart';
+
 import '../../fakes/in_memory_token_store.dart';
 import '../../fakes/throwing_adapter.dart';
 
@@ -19,12 +20,14 @@ import '../../fakes/throwing_adapter.dart';
   // matcher 换 UrlRequestMatcher：默认 FullHttpRequestMatcher 对带体请求要求
   // 注册时给 data 匹配器（无 data 的路由不匹配任何带体请求），路由匹配已覆盖用例意图。
   final adapter = DioAdapter(dio: dio, matcher: const UrlRequestMatcher());
-  final container = ProviderContainer(overrides: [
-    dioProvider.overrideWithValue(dio),
-    tokenStoreProvider.overrideWithValue(store),
-    sessionGuardProvider.overrideWithValue(guard),
-    appConfigClientIdProvider.overrideWithValue('saas-console'),
-  ]);
+  final container = ProviderContainer(
+    overrides: [
+      dioProvider.overrideWithValue(dio),
+      tokenStoreProvider.overrideWithValue(store),
+      sessionGuardProvider.overrideWithValue(guard),
+      appConfigClientIdProvider.overrideWithValue('saas-console'),
+    ],
+  );
   return (container, adapter, store, guard);
 }
 
@@ -81,9 +84,14 @@ void main() {
     // fn: M01.F04.I01
     final (container, adapter, store, _) = _rig();
     addTearDown(container.dispose);
-    adapter.onPost('/api/v1/auth/login', (server) => server.reply(200, _okBody));
+    adapter.onPost(
+      '/api/v1/auth/login',
+      (server) => server.reply(200, _okBody),
+    );
     await _settled(container); // 先落 Anonymous
-    await container.read(authControllerProvider.notifier).login('alice', 'dev123456');
+    await container
+        .read(authControllerProvider.notifier)
+        .login('alice', 'dev123456');
     final state = container.read(authControllerProvider);
     expect(state, const Authed(userId: 'u-1', currentTenantId: null));
     expect(await store.readAccessToken(), 'at-1');
@@ -93,11 +101,14 @@ void main() {
   test('423 锁定 → failed 文案', () async {
     final (container, adapter, _, _) = _rig();
     addTearDown(container.dispose);
-    adapter.onPost('/api/v1/auth/login', (server) => server.reply(423, {
-          'code': 'ACCOUNT_LOCKED',
-          'message': 'locked',
-          'lockedUntil': '2026-10-05T00:00:00Z',
-        }));
+    adapter.onPost(
+      '/api/v1/auth/login',
+      (server) => server.reply(423, {
+        'code': 'ACCOUNT_LOCKED',
+        'message': 'locked',
+        'lockedUntil': '2026-10-05T00:00:00Z',
+      }),
+    );
     await _settled(container);
     await container.read(authControllerProvider.notifier).login('alice', 'bad');
     expect(
@@ -111,14 +122,17 @@ void main() {
     addTearDown(container.dispose);
     var fired = 0;
     guard.onUnauthorized = () => fired++;
-    adapter.onPost('/api/v1/auth/login', (server) => server.reply(401, {
-          'code': 'BAD_CREDENTIALS',
-          'message': '用户名或密码错误',
-        }));
+    adapter.onPost(
+      '/api/v1/auth/login',
+      (server) =>
+          server.reply(401, {'code': 'BAD_CREDENTIALS', 'message': '用户名或密码错误'}),
+    );
     await _settled(container);
     await container.read(authControllerProvider.notifier).login('alice', 'bad');
-    expect(container.read(authControllerProvider),
-        const AuthFailed('用户名或密码错误'));
+    expect(
+      container.read(authControllerProvider),
+      const AuthFailed('用户名或密码错误'),
+    );
     expect(fired, 0); // auth 路径排除
     expect(await store.readAccessToken(), isNull);
   });
@@ -131,8 +145,7 @@ void main() {
     dio.httpClientAdapter = ThrowingAdapter();
     await _settled(container);
     await container.read(authControllerProvider.notifier).login('alice', 'x');
-    expect(container.read(authControllerProvider),
-        const AuthFailed('无法连接服务器'));
+    expect(container.read(authControllerProvider), const AuthFailed('无法连接服务器'));
   });
 
   test('submitting 期间重复 login 是 no-op（RF#1 状态机侧）', () async {
@@ -156,8 +169,10 @@ void main() {
     adapter.onPost('/api/v1/auth/login', (server) => server.reply(200, body));
     await _settled(container);
     await container.read(authControllerProvider.notifier).login('alice', 'x');
-    expect(container.read(authControllerProvider),
-        const AuthFailed('登录失败：服务端响应缺少令牌'));
+    expect(
+      container.read(authControllerProvider),
+      const AuthFailed('登录失败：服务端响应缺少令牌'),
+    );
     expect(await store.readAccessToken(), isNull);
   });
 }
