@@ -9,10 +9,11 @@ import 'token_store.dart';
 
 /// 认证状态机（riverpod Notifier）。
 /// - login：submitting 门（防并发）→ sessionsLogin → token 非空校验 → save → Authed
-/// - 四分支错误映射：423 锁定 / 401 错凭据 / 网络不可达 / 响应缺令牌
+/// - 四分支错误映射：423 锁定 / 401 错凭据 / 无响应=网络不可达 / 其余带响应=登录失败；
+///   响应缺令牌单独文案（服务端契约破损，非传输问题）
 /// - restore：accessToken 非空 → Authed（无 whoami，userId 空）；空 → Anonymous
-/// - sessionExpired：清 store + 回 anonymous（401 缝回调）
-/// - logout：best-effort 通知 + 本地清必达
+/// - sessionExpired：清 store（写侧故障不阻断）+ 回 anonymous（401 缝回调）
+/// - logout：best-effort 通知 + 本地清必达（clear 失败仍迁移 Anonymous）
 class AuthController extends Notifier<AuthState> {
   late final AuthApi _api;
   late final TokenStore _store;
@@ -81,21 +82,32 @@ class AuthController extends Notifier<AuthState> {
     } catch (_) {
       // best-effort：服务端失败不阻断本地清理。
     }
-    await _store.clear();
+    try {
+      await _store.clear();
+    } catch (_) {
+      // 存储写侧故障不阻断迁移（终审 I-1）：clear 成败不影响回 Anonymous。
+    }
     state = const AuthAnonymous();
   }
 
   /// 401 缝回调（SessionGuard.fire）：清 store + 回 anonymous。
   Future<void> sessionExpired() async {
-    await _store.clear();
+    try {
+      await _store.clear();
+    } catch (_) {
+      // 同 logout（终审 I-1）：清失败也必须迁移。
+    }
     if (state is! AuthAnonymous) state = const AuthAnonymous();
   }
 
   static String _message(DioException e) {
+    // 四分支对齐 react LoginPage（终审 I-2）：带响应 = 服务端应答过，
+    // 不得谎报「无法连接服务器」；Phase 1 不透传服务端 message。
+    if (e.response == null) return '无法连接服务器';
     final status = e.response?.statusCode;
     if (status == 423) return '账号已被锁定，请稍后再试';
     if (status == 401) return '用户名或密码错误';
-    return '无法连接服务器';
+    return '登录失败，请稍后再试';
   }
 }
 

@@ -12,7 +12,8 @@ class AuthAnonymous extends AuthState {
   const AuthAnonymous();
 }
 
-/// 登录/登出进行中：UI 据此禁用按钮、状态机拒绝并发 login。
+/// 登录进行中（登出不经此态，Authed→Anonymous 直迁）：UI 据此禁用按钮、
+/// 状态机拒绝并发 login。
 class AuthSubmitting extends AuthState {
   const AuthSubmitting();
 }

@@ -10,10 +10,14 @@ import 'package:saas_identity_platform_flutter/core/auth/providers.dart';
 
 import '../../fakes/in_memory_token_store.dart';
 import '../../fakes/throwing_adapter.dart';
+import '../../fakes/throwing_clear_token_store.dart';
 
 /// 测试装配：恒定 overrides + DioAdapter dio。用例里经 adapter.onPost 挂路由。
-(ProviderContainer, DioAdapter, InMemoryTokenStore, SessionGuard) _rig() {
-  final store = InMemoryTokenStore();
+/// 可注入存储变体（如 ThrowingClearTokenStore）做写侧故障注入。
+(ProviderContainer, DioAdapter, InMemoryTokenStore, SessionGuard) _rig([
+  InMemoryTokenStore? storeOverride,
+]) {
+  final store = storeOverride ?? InMemoryTokenStore();
   final guard = SessionGuard();
   final dio = Dio(BaseOptions(baseUrl: 'http://localhost:5101'));
   // 0.6.1 构造签名：DioAdapter({required this.dio})，构造体内自绑 httpClientAdapter。
@@ -174,5 +178,52 @@ void main() {
       const AuthFailed('登录失败：服务端响应缺少令牌'),
     );
     expect(await store.readAccessToken(), isNull);
+  });
+
+  test('带响应的 500 → 登录失败文案（不谎报网络断）', () async {
+    final (container, adapter, _, _) = _rig();
+    addTearDown(container.dispose);
+    adapter.onPost(
+      '/api/v1/auth/login',
+      (server) => server.reply(500, {'code': 'INTERNAL', 'message': 'boom'}),
+    );
+    await _settled(container);
+    await container.read(authControllerProvider.notifier).login('alice', 'x');
+    expect(
+      container.read(authControllerProvider),
+      const AuthFailed('登录失败，请稍后再试'),
+    );
+  });
+
+  test('store.clear 抛错：logout/sessionExpired 仍迁移 Anonymous 且无未处理异常', () async {
+    // fn: M01.F04.I06
+    final (container, adapter, _, _) = _rig(ThrowingClearTokenStore());
+    addTearDown(container.dispose);
+    adapter.onPost(
+      '/api/v1/auth/login',
+      (server) => server.reply(200, _okBody),
+    );
+    await _settled(container);
+    await container
+        .read(authControllerProvider.notifier)
+        .login('alice', 'dev123456'); // save 仍可用，先到 Authed
+    expect(container.read(authControllerProvider), const Authed(userId: 'u-1'));
+
+    // UI 同款 fire-and-forget：logout 的错误不得逃逸成 unhandled async error，
+    // 且 clear 抛错不阻断 Authed→Anonymous 迁移。
+    final logoutFuture = container
+        .read(authControllerProvider.notifier)
+        .logout();
+    await pumpEventQueue();
+    expect(container.read(authControllerProvider), const AuthAnonymous());
+    await expectLater(logoutFuture, completes);
+
+    // sessionExpired（401 缝回调）同语义：clear 抛错仍迁移。
+    final expiredFuture = container
+        .read(authControllerProvider.notifier)
+        .sessionExpired();
+    await pumpEventQueue();
+    expect(container.read(authControllerProvider), const AuthAnonymous());
+    await expectLater(expiredFuture, completes);
   });
 }
