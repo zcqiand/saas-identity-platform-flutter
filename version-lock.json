@@ -9,6 +9,8 @@
     "one_of_serializer": "1.5.0",
     "built_value": "8.13.0",
     "built_collection": "5.1.2",
+    "flutter_secure_storage": "11.2.0",
+    "http_mock_adapter": "0.6.1",
     "flutter_lints": "6.0.0",
     "openapi_generator": "7.25.0 (dart-dio; 与 saas-swift 对齐)",
     "targets": "android + web (iOS 缓做)",

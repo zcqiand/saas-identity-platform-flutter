@@ -15,6 +15,8 @@ dependencies:
   one_of_serializer: 1.5.0
   built_value: 8.13.0
   built_collection: 5.1.2
+  flutter_secure_storage: 11.2.0
+  http_mock_adapter: 0.6.1
   # 生成客户端（lib/generated/）的传递依赖（json_annotation 等）由 gen-shared 产物
   # 对账后补（Phase 0a Task 8），以生成器临时包 pubspec 的约束为准钉 exact。
 
