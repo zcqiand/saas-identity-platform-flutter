@@ -24,7 +24,13 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await readAccessToken();
+    String? token;
+    try {
+      token = await readAccessToken();
+    } catch (_) {
+      // 存储读失败不挂死请求：无头继续，服务端 401 会经 onError 缝自愈清会话。
+      token = null;
+    }
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }

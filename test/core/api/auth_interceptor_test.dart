@@ -90,4 +90,21 @@ void main() {
     expect(bare.onUnauthorized, isNull);
     bare.fire(); // 不抛即通过
   });
+
+  test('token 读失败不挂死——无头继续请求', () async {
+    Object? captured;
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        captured = options.headers['Authorization'];
+        handler.next(options);
+      },
+    ));
+    dio.interceptors[0] = AuthInterceptor(
+      readAccessToken: () async => throw StateError('storage boom'),
+      guard: guard,
+    );
+    adapter.onGet('/api/v1/ping', (server) => server.reply(200, {'ok': 1}));
+    await dio.get<dynamic>('/api/v1/ping'); // 完成即通过（不挂起）
+    expect(captured, isNull);
+  });
 }
