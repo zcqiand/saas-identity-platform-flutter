@@ -23,11 +23,15 @@ flutter create --platforms=android,web --project-name saas_identity_platform_flu
 flutter pub get
 
 # 4) 跑起来（web dev 端口钉死 5108——随机端口进不了 CORS 白名单）
-flutter run -d chrome --web-port 5108 --dart-define=API_BASE_URL=http://localhost:5101
+flutter run -d chrome --web-port 5108 --dart-define=API_BASE_URL=http://localhost:5101 --dart-define=SAAS_CLIENT_ID=saas-console
 
 # 5) 生成客户端（需 Node+Java+Dart）
 bash scripts/gen-shared.sh
 ```
+
+> Phase 1 起登录需 `SAAS_CLIENT_ID`（本仓 `saas-console`，缺失启动即崩——硬规则 §1）。
+> token 存储走 `TokenStore` 缝：Android Keystore 级 / **Web 端 localStorage 级**
+> （flutter_secure_storage web 实现，与 react 参照同级，联调正式凭据前知悉）。
 
 ## 功能特性
 

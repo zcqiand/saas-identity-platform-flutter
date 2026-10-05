@@ -64,10 +64,10 @@ menus；SSO（Phase 3）；真后端联调与 CORS 白名单（Phase 2）；iOS�
 | T2 | AppConfig clientId 门（SAAS_CLIENT_ID fail-fast） | 开发 | Claude | — | 完成（ec3dae5） |
 | T3 | TokenStore 缝（抽象 + SecureTokenStore + 内存 fake） | 开发 | Claude | — | 完成（d6998fb） |
 | T4 | dio 装配 + AuthInterceptor（Bearer + 401 缝）+ SessionGuard | 开发 | Claude | — | 完成（7831c35+2389961） |
-| T5 | AuthState 状态机 + AuthController（login/restore 四分支）+ I01 锚 + 树推进 | 开发 | Claude | — | 开发中 |
-| T6 | 401 缝接线（controller↔interceptor）+ 登出 + I06 锚 + 树推进 | 开发 | Claude | — | 待开始 |
-| T7 | LoginPage + main.dart 壳 + I03 @entry/锚 + 树推进 | 开发 | Claude | — | 待开始 |
-| T8 | docs 同步 + trace.json（trace_cmd）+ 全门绿 | 对齐 | Claude | — | 待开始 |
+| T5 | AuthState 状态机 + AuthController（login/restore 四分支）+ I01 锚 + 树推进 | 开发 | Claude | — | 完成（f1ceaf8） |
+| T6 | 401 缝接线（controller↔interceptor）+ 登出 + I06 锚 + 树推进 | 开发 | Claude | — | 完成（21349e4） |
+| T7 | LoginPage + main.dart 壳 + I03 @entry/锚 + 树推进 | 开发 | Claude | — | 完成（b9b0ec5） |
+| T8 | docs 同步 + trace.json（trace_cmd）+ 全门绿 | 对齐 | Claude | — | 完成（本 commit） |
 
 ## 4. 功能影响（需求与功能对齐的唯一位置）
 
