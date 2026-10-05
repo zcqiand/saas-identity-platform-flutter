@@ -132,7 +132,7 @@
 | 子项 ID | 名称 | 类型 | 交付 | 说明 | 状态 |
 |---|---|---|---|---|---|
 | M01.F04.I01 | 密码登录 | 接口 | 前端+后端 | `/auth/login` 邮箱+密码换取 saas session cookie；连续 5 次密码错后端返 HTTP 423 Locked | 开发中 |
-| M01.F04.I03 | 密码登录 UI | 页面 | 仅前端 | saas-flutter LoginPage 登录页面 | 规划 |
+| M01.F04.I03 | 密码登录 UI | 页面 | 仅前端 | saas-flutter LoginPage 登录页面 | 开发中 |
 | M01.F04.I06 | 登出（本地清理 + 全局 SSO） | 接口 | 前端+后端 | `/auth/logout` 清理当前浏览器 session cookie + 全局 SSO logout | 开发中 |
 
 ---
