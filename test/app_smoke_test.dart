@@ -16,6 +16,17 @@ void main() {
         returnsNormally,
       );
     });
+
+    test('空 clientId 必须 throw（硬规则 §1）', () {
+      expect(() => AppConfig.validateClientId(''), throwsStateError);
+    });
+
+    test('非空 clientId 通过', () {
+      expect(
+        () => AppConfig.validateClientId('saas-console'),
+        returnsNormally,
+      );
+    });
   });
 
   testWidgets('App 壳可构建', (tester) async {
