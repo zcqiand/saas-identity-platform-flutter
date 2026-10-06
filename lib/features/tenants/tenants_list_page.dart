@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
+import 'tenant_detail_page.dart';
 import 'tenant_list_controller.dart';
 import 'tenant_status_label.dart';
 
@@ -111,8 +112,13 @@ class _TenantsListPageState extends ConsumerState<TenantsListPage> {
                               title: Text(t.name),
                               subtitle: Text(t.tenantKey),
                               trailing: _StatusBadge(t.status),
-                              // T3 接线：详情页落地后推 TenantDetailPage
-                              onTap: () {},
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (_) =>
+                                      TenantDetailPage(tenantId: t.id),
+                                ),
+                              ),
                             );
                           },
                           separatorBuilder: (_, _) => const Divider(height: 1),
