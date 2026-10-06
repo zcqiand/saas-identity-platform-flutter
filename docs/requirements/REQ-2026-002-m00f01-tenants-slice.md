@@ -67,7 +67,11 @@ T5 trace+门禁 → T6 联调+GA+ACCEPTANCE（人批门）。详见
 | M00.F01.I01 | 规划 → 开发中（T2）→ 已上线（T6 人批后） |
 | M00.F01.I03 | 规划 → 开发中（T3）→ 已上线（T6 人批后，行文本随 G-11 勘误） |
 
-## 5. 验收
+## 5. 人工验收记录（GA 前置锚）
 
-人工验收记录：`ACCEPTANCE-2026-10-06-m00f01.md`（环境实证 + AC 分场景实录；
-GA 翻转 M00 模块/F01/I01/I03 行凭人批触发，lab M03.F01 先例同构）。
+- **✅ 2026-10-07 人工验收通过**：AC-1~AC-3 全路径过（浏览器 http://localhost:5108
+  走列表/过滤/详情；环境与分场景实录见 `ACCEPTANCE-2026-10-06-m00f01.md`，人批同日
+  给出）。环境：saas-nextjs `:5101` + saas-fastapi `:5107`（CORS 预检实证）+
+  saas-flutter `:5108`；凭据 alice/dev123456（clientId=`saas-console`）。
+  GA 翻转 M00 模块/F01/I01/I03 共 4 行随批执行（`tree_change.py --apply` 免批通道，
+  lab M03.F01 先例同构）。
