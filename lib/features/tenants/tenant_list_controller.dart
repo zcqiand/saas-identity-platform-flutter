@@ -49,13 +49,14 @@ class TenantListController extends Notifier<TenantListState> {
     return const TenantListLoading();
   }
 
-  /// 显式 page=1/pageSize=50（Review Focus 4：不依赖服务端默认，
-  /// lab 队列同口径）。silent=true 不闪 loading（回刷复用）。
+  /// 显式 page=0/pageSize=50（Review Focus 4：不依赖服务端默认）。
+  /// page 0 基——四方契约判例 M96.F02.I60（不传→page=0）/I61（page=1 即第二页）。
+  /// silent=true 不闪 loading（回刷复用）。
   Future<void> load({bool silent = false}) async {
     if (!silent) state = const TenantListLoading();
     try {
       final response = await _api.adminTenantsListTenants(
-        page: 1,
+        page: 0,
         pageSize: 50,
       );
       if (!ref.mounted) return; // autoDispose：页 pop 后丢陈旧响应

@@ -46,7 +46,9 @@ void main() {
     expect(find.text('停用'), findsWidgets);
   });
 
-  testWidgets('captured query 显式 page=1&pageSize=50（不依赖服务端默认）', (tester) async {
+  testWidgets('captured query 显式 page=0&pageSize=50（契约 0 基，不依赖服务端默认）', (
+    tester,
+  ) async {
     final (dio, adapter) = tenantRig();
     final queries = <Map<String, String>>[];
     adapter.onGet('/api/v1/admin/tenants', (server) {
@@ -56,7 +58,8 @@ void main() {
       });
     });
     await pumpList(tester, dio);
-    expect(queries.single['page'], '1');
+    // 契约 0 基（contract-test M96.F02.I60：不传→page=0；M96.F02.I61：page=1 即第二页）
+    expect(queries.single['page'], '0');
     expect(queries.single['pageSize'], '50');
   });
 
