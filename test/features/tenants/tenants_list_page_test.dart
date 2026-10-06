@@ -2,12 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
 
 import 'package:saas_identity_platform_flutter/core/auth/providers.dart';
 import 'package:saas_identity_platform_flutter/features/tenants/tenants_list_page.dart';
-import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart'
-    hide AuthState;
 
 import '../../fakes/throwing_adapter.dart';
 import '../../support/tenant_fixtures.dart';
