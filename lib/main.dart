@@ -5,6 +5,7 @@ import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_state.dart';
 import 'core/auth/login_page.dart';
 import 'core/config/app_config.dart';
+import 'features/tenants/tenants_list_page.dart';
 
 void main() {
   AppConfig.validate(); // fail-fast：配置缺失不进 UI（suite 硬规则 §1）
@@ -56,7 +57,7 @@ class _Shell extends ConsumerWidget {
           ),
         ],
       ),
-      body: const Center(child: Text('已登录（Phase 1 占位壳）')),
+      body: const TenantsListPage(),
     );
   }
 }
