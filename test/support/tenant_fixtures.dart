@@ -28,6 +28,58 @@ Map<String, dynamic> tenantListJson(List<Map<String, dynamic>> items) =>
       'total': items.length,
     };
 
+/// M00.F02 成员切片 fixtures（TenantMemberUserView 八字段口径，禁超面）。
+Map<String, dynamic> memberJson({
+  String id = 'u-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': id,
+    'tenantId': 't-1',
+    'username': 'user-$id',
+    'email': '$id@example.com',
+    'status': 'active',
+    'roleIds': <String>['r-1'],
+    'createdAt': _now,
+    'updatedAt': _now,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+Map<String, dynamic> memberListJson(List<Map<String, dynamic>> items) =>
+    <String, dynamic>{
+      'items': items,
+      'page': 0,
+      'pageSize': 50,
+      'total': items.length,
+    };
+
+/// 邀请响应 TenantMemberView{member, user, roles}（member/user 内嵌全字段）。
+Map<String, dynamic> inviteViewJson() => <String, dynamic>{
+  'member': {
+    'id': 'm-inv',
+    'tenantId': 't-1',
+    'userId': 'u-inv',
+    'memberName': null,
+    'isOwner': false,
+    'status': 'invited',
+    'createdAt': _now,
+    'updatedAt': _now,
+  },
+  'user': {
+    'id': 'u-inv',
+    'username': 'inv@example.com',
+    'email': 'inv@example.com',
+    'mobile': null,
+    'status': 'invited',
+    'failedAttempts': null,
+    'lockedUntil': null,
+    'createdAt': _now,
+    'updatedAt': _now,
+  },
+  'roles': <String>[],
+};
+
 (Dio, DioAdapter) tenantRig() {
   final dio = Dio(BaseOptions(baseUrl: 'http://localhost:5101'));
   final adapter = DioAdapter(dio: dio, matcher: const UrlRequestMatcher());
