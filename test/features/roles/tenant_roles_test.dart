@@ -25,6 +25,7 @@ void main() {
   }
 
   testWidgets('角色列表：page=0&pageSize=50 + 行渲染（I01 证明）', (tester) async {
+    // fn: M00.F03.I01
     var path = '';
     var query = <String, dynamic>{};
     final (dio, adapter) = tenantRig();
@@ -45,6 +46,7 @@ void main() {
   });
 
   testWidgets('FAB 创建角色：POST body 恰五字段 + 收窗回刷（I02 证明）', (tester) async {
+    // fn: M00.F03.I02
     CreateSysRoleRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/roles', (server) {
@@ -62,7 +64,10 @@ void main() {
     await pumpRoles(tester, dio);
     await tester.tap(find.byTooltip('新建角色'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextField, '客户端标识'), 'saas-console');
+    await tester.enterText(
+      find.widgetWithText(TextField, '客户端标识'),
+      'saas-console',
+    );
     await tester.enterText(find.widgetWithText(TextField, '角色代码'), 'editor');
     await tester.enterText(find.widgetWithText(TextField, '角色名称'), '编辑者');
     await tester.enterText(find.widgetWithText(TextField, '描述'), '可编辑内容');
@@ -94,7 +99,10 @@ void main() {
     await tester.tap(find.byTooltip('新建角色'));
     await tester.pumpAndSettle();
     // 只填客户端标识，角色代码/角色名称留空 → fail-fast
-    await tester.enterText(find.widgetWithText(TextField, '客户端标识'), 'saas-console');
+    await tester.enterText(
+      find.widgetWithText(TextField, '客户端标识'),
+      'saas-console',
+    );
     await tester.tap(find.widgetWithText(FilledButton, '保存'));
     await tester.pumpAndSettle();
     expect(find.text('请完整填写客户端标识、角色代码与角色名称'), findsOneWidget);
@@ -114,7 +122,10 @@ void main() {
     );
     await tester.tap(find.byTooltip('新建角色'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextField, '客户端标识'), 'saas-console');
+    await tester.enterText(
+      find.widgetWithText(TextField, '客户端标识'),
+      'saas-console',
+    );
     await tester.enterText(find.widgetWithText(TextField, '角色代码'), 'editor');
     await tester.enterText(find.widgetWithText(TextField, '角色名称'), '编辑者');
     await tester.tap(find.widgetWithText(FilledButton, '保存'));
@@ -124,6 +135,7 @@ void main() {
   });
 
   testWidgets('行进详情：十字段卡（I03 证明）', (tester) async {
+    // fn: M00.F03.I03
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/roles', (server) {
       server.reply(200, roleListJson([roleJson()]));
@@ -147,6 +159,7 @@ void main() {
   });
 
   testWidgets('行编辑：PUT body 恰 roleName/description（I04 证明）', (tester) async {
+    // fn: M00.F03.I04
     UpdateSysRoleRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/roles', (server) {
@@ -179,14 +192,8 @@ void main() {
           .text,
       'desc-r-1',
     );
-    await tester.enterText(
-      find.widgetWithText(TextField, '角色名称'),
-      '新名称',
-    );
-    await tester.enterText(
-      find.widgetWithText(TextField, '描述'),
-      '新描述',
-    );
+    await tester.enterText(find.widgetWithText(TextField, '角色名称'), '新名称');
+    await tester.enterText(find.widgetWithText(TextField, '描述'), '新描述');
     await tester.tap(find.widgetWithText(FilledButton, '保存'));
     await tester.pumpAndSettle();
     expect(captured, isNotNull);
@@ -196,6 +203,7 @@ void main() {
   });
 
   testWidgets('行删除：确认文案 + DELETE + 回刷（I05 证明）', (tester) async {
+    // fn: M00.F03.I05
     var deleteCalls = 0;
     var getCalls = 0;
     final (dio, adapter) = tenantRig();

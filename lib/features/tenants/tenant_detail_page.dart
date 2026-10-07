@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
 import '../members/member_list_page.dart';
+import '../roles/role_list_page.dart';
 import 'tenant_detail_controller.dart';
 import 'tenant_status_label.dart';
 
@@ -57,6 +58,17 @@ class _TenantDetailPageState extends ConsumerState<TenantDetailPage> {
               context,
               MaterialPageRoute<void>(
                 builder: (_) => MemberListPage(tenantId: widget.tenantId),
+              ),
+            ),
+          ),
+          // 角色入口（REQ-2026-005 M00.F03）：角色是 tenant×client 面。
+          IconButton(
+            tooltip: '角色',
+            icon: const Icon(Icons.manage_accounts_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => RoleListPage(tenantId: widget.tenantId),
               ),
             ),
           ),
