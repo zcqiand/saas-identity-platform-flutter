@@ -113,3 +113,33 @@ Map<String, dynamic> roleListJson(List<Map<String, dynamic>> items) =>
       'pageSize': 50,
       'total': items.length,
     };
+
+/// M00.F04 角色菜单授权切片 fixtures（SysMenu 目录 + RoleMenuGrant）。
+Map<String, dynamic> menuJson({
+  String id = 'm-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': id,
+    'clientId': 'saas-console',
+    'parentId': null,
+    'title': '菜单-$id',
+    'type': 'menu',
+    'path': '/$id',
+    'component': null,
+    'perms': null,
+    'icon': null,
+    'sortOrder': 0,
+    'status': 1,
+    'createdAt': _now,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+Map<String, dynamic> roleGrantJson(List<String> menuIds) =>
+    <String, dynamic>{
+      'roleId': 'r-1',
+      'tenantId': 't-1',
+      'menuIds': menuIds,
+      'updatedAt': _now,
+    };
