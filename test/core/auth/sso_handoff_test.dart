@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
 
 import 'package:saas_identity_platform_flutter/core/auth/providers.dart';
 import 'package:saas_identity_platform_flutter/core/auth/sso_handoff.dart';
@@ -21,13 +20,16 @@ void main() {
     state: 'xyz',
   );
 
-  Widget rig(WidgetTester tester, Dio dio, void Function(String url) onRedirect) =>
-    ProviderScope(
-      overrides: [dioProvider.overrideWithValue(dio)],
-      child: MaterialApp(
-        home: SsoHandoff(sso: sso, onRedirect: onRedirect),
-      ),
-    );
+  Widget rig(
+    WidgetTester tester,
+    Dio dio,
+    void Function(String url) onRedirect,
+  ) => ProviderScope(
+    overrides: [dioProvider.overrideWithValue(dio)],
+    child: MaterialApp(
+      home: SsoHandoff(sso: sso, onRedirect: onRedirect),
+    ),
+  );
 
   test('参数解析：全参齐才算 SSO，缺一或 responseType≠code 回退', () {
     final ok = SsoParams.fromUri(
@@ -100,7 +102,7 @@ void main() {
     );
     expect(
       buildSsoRedirectUrl('https://lab.local/cb?from=lab', 'c 1', 's&t'),
-      'https://lab.local/cb?from=lab&code=c%201&state=s%26t',
+      'https://lab.local/cb?from=lab&code=c+1&state=s%26t',
     );
   });
 

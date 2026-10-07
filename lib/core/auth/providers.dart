@@ -35,3 +35,8 @@ final dioProvider = Provider<Dio>((ref) {
 final authApiProvider = Provider<AuthApi>(
   (ref) => AuthApi(ref.watch(dioProvider), standardSerializers),
 );
+
+/// OAuth 授权码签发（REQ-2026-012 M04.F03.I01，SSO 回跳用）。
+final oauthApiProvider = Provider<OauthApi>(
+  (ref) => OauthApi(ref.watch(dioProvider), standardSerializers),
+);

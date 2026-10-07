@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_state.dart';
 import 'core/auth/login_page.dart';
+import 'core/auth/sso_handoff.dart';
 import 'core/config/app_config.dart';
 import 'features/appadmin/client_list_page.dart';
 import 'features/me/me_page.dart';
@@ -13,6 +14,10 @@ void main() {
   AppConfig.validate(); // fail-fast：配置缺失不进 UI（suite 硬规则 §1）
   runApp(const ProviderScope(child: SaasFlutterApp()));
 }
+
+/// SSO 回跳参数（REQ-2026-012 M04.F03.I01）：启动时从地址栏解析一次；
+/// 无参/非法 → null，走正常 console 流程。
+final SsoParams? kSsoParams = SsoParams.fromUri(Uri.base);
 
 class SaasFlutterApp extends ConsumerWidget {
   const SaasFlutterApp({super.key});
@@ -28,7 +33,8 @@ class SaasFlutterApp extends ConsumerWidget {
         AuthAnonymous() ||
         AuthFailed() ||
         AuthSubmitting() => const LoginPage(),
-        Authed() => const _Shell(),
+        Authed() =>
+          kSsoParams != null ? SsoHandoff(sso: kSsoParams!) : const _Shell(),
       },
     );
   }
