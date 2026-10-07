@@ -85,3 +85,31 @@ Map<String, dynamic> inviteViewJson() => <String, dynamic>{
   final adapter = DioAdapter(dio: dio, matcher: const UrlRequestMatcher());
   return (dio, adapter);
 }
+
+/// M00.F03 角色切片 fixtures（SysRole 十字段口径，status smallint 1/0）。
+Map<String, dynamic> roleJson({
+  String id = 'r-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': id,
+    'tenantId': 't-1',
+    'clientId': 'saas-console',
+    'roleCode': 'code-$id',
+    'roleName': '角色-$id',
+    'description': 'desc-$id',
+    'isPreset': false,
+    'status': 1,
+    'createdAt': _now,
+    'updatedAt': _now,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+Map<String, dynamic> roleListJson(List<Map<String, dynamic>> items) =>
+    <String, dynamic>{
+      'items': items,
+      'page': 0,
+      'pageSize': 50,
+      'total': items.length,
+    };
