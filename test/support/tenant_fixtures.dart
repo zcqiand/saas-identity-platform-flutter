@@ -122,7 +122,8 @@ Map<String, dynamic> menuJson({
   final base = <String, dynamic>{
     'id': id,
     'clientId': 'saas-console',
-    'parentId': null,
+    // 根菜单 wire=零 UUID（后端 b.parentId ?? 0-uuid；契约 parentId 非空）
+    'parentId': '00000000-0000-0000-0000-000000000000',
     'title': '菜单-$id',
     'type': 'menu',
     'path': '/$id',
@@ -136,10 +137,9 @@ Map<String, dynamic> menuJson({
   return <String, dynamic>{...base, ...overrides};
 }
 
-Map<String, dynamic> roleGrantJson(List<String> menuIds) =>
-    <String, dynamic>{
-      'roleId': 'r-1',
-      'tenantId': 't-1',
-      'menuIds': menuIds,
-      'updatedAt': _now,
-    };
+Map<String, dynamic> roleGrantJson(List<String> menuIds) => <String, dynamic>{
+  'roleId': 'r-1',
+  'tenantId': 't-1',
+  'menuIds': menuIds,
+  'updatedAt': _now,
+};

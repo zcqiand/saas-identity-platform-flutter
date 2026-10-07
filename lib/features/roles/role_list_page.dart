@@ -8,6 +8,7 @@ import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.d
 import 'role_detail_page.dart';
 import 'role_form_dialog.dart';
 import 'role_list_controller.dart';
+import 'role_menu_grant_page.dart';
 import 'role_providers.dart';
 import 'role_status_label.dart';
 
@@ -174,12 +175,30 @@ class _RoleListPageState extends ConsumerState<RoleListPage> {
                             return ListTile(
                               title: Text(r.roleName),
                               subtitle: Text(r.roleCode),
-                              // 行尾写半边（I04 编辑 / I05 删除）+ 状态徽标；
-                              // IconButton 自吞点击不与行 onTap 打架。
+                              // 行尾写半边（I04 编辑 / I05 删除 / F04 菜单
+                              // 授权）+ 状态徽标；IconButton 自吞点击不与
+                              // 行 onTap 打架。
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   _StatusBadge(r.status),
+                                  // 菜单授权入口（REQ-2026-006 M00.F04）：
+                                  // 角色的 clientId 对齐 client 作用域菜单。
+                                  IconButton(
+                                    tooltip: '菜单授权',
+                                    icon: const Icon(Icons.fact_check_outlined),
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => RoleMenuGrantPage(
+                                          tenantId: widget.tenantId,
+                                          roleId: r.id,
+                                          clientId: r.clientId,
+                                          roleName: r.roleName,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   IconButton(
                                     tooltip: '编辑',
                                     icon: const Icon(Icons.edit_outlined),

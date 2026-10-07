@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -41,6 +42,7 @@ void main() {
   }
 
   testWidgets('进授权页：目录 + 现授权并行拉，勾选回显（I02 证明）', (tester) async {
+    // fn: M00.F04.I02
     var grantPath = '';
     final (dio, adapter) = tenantRig();
     stubCatalog(adapter);
@@ -54,26 +56,34 @@ void main() {
     expect(grantPath, '/api/v1/tenants/t-1/roles/r-1/menus');
     // 回显：m-1 已授权（checked），m-2 未授权（unchecked）
     expect(
-      tester.widget<CheckboxListTile>(
-        find.widgetWithText(CheckboxListTile, '菜单-m-1'),
-      ).value,
+      tester
+          .widget<CheckboxListTile>(
+            find.widgetWithText(CheckboxListTile, '菜单-m-1'),
+          )
+          .value,
       isTrue,
     );
     expect(
-      tester.widget<CheckboxListTile>(
-        find.widgetWithText(CheckboxListTile, '菜单-m-2'),
-      ).value,
+      tester
+          .widget<CheckboxListTile>(
+            find.widgetWithText(CheckboxListTile, '菜单-m-2'),
+          )
+          .value,
       isFalse,
     );
   });
 
   testWidgets('保存授权：PUT body menuIds 恰勾选全集（I03 证明）', (tester) async {
+    // fn: M00.F04.I03
     SetSysRoleMenusRequest? captured;
     final (dio, adapter) = tenantRig();
     stubCatalog(adapter);
     adapter.onGet('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(200, roleGrantJson(['m-1']));
     });
+    await pumpGrant(tester, dio);
+    // 写 handler 在初始 load 后注册——UrlRequestMatcher 只比 path 不比
+    // method，同路径 onPut 会顶掉 grants GET（成员片同坑）。
     adapter.onPut('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(200, (RequestOptions options) {
         captured = standardSerializers.deserializeWith(
@@ -83,7 +93,6 @@ void main() {
         return roleGrantJson(['m-1', 'm-2']);
       });
     });
-    await pumpGrant(tester, dio);
     await tester.tap(find.text('菜单-m-2'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, '保存授权'));
@@ -94,20 +103,21 @@ void main() {
   });
 
   testWidgets('清空授权：确认文案 + DELETE + 回读（I04 证明）', (tester) async {
+    // fn: M00.F04.I04
     var deleteCalls = 0;
     var grantCalls = 0;
     final (dio, adapter) = tenantRig();
     stubCatalog(adapter);
+    // 同路径 GET+DELETE 折单 handler 按 method 分流（UrlRequestMatcher
+    // 只比 path——回读 GET 不能被 DELETE 注册顶掉）。
     adapter.onGet('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(200, (RequestOptions options) {
+        if (options.method == 'DELETE') {
+          deleteCalls++;
+          return null;
+        }
         grantCalls++;
         return roleGrantJson(['m-1']);
-      });
-    });
-    adapter.onDelete('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
-      server.reply(204, (RequestOptions options) {
-        deleteCalls++;
-        return null;
       });
     });
     await pumpGrant(tester, dio);
@@ -129,13 +139,13 @@ void main() {
     adapter.onGet('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(200, roleGrantJson(['m-1']));
     });
+    await pumpGrant(tester, dio);
     adapter.onDelete('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(204, (RequestOptions options) {
         deleteCalls++;
         return null;
       });
     });
-    await pumpGrant(tester, dio);
     await tester.tap(find.widgetWithText(OutlinedButton, '清空授权'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, '取消'));
@@ -150,10 +160,10 @@ void main() {
     adapter.onGet('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(200, roleGrantJson(['m-1']));
     });
+    await pumpGrant(tester, dio);
     adapter.onPut('/api/v1/tenants/t-1/roles/r-1/menus', (server) {
       server.reply(500, <String, dynamic>{'message': 'boom'});
     });
-    await pumpGrant(tester, dio);
     await tester.tap(find.text('菜单-m-2'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, '保存授权'));
@@ -161,9 +171,11 @@ void main() {
     expect(find.text('保存失败，请重试'), findsOneWidget);
     // 勾选态原地不动：m-2 仍呈勾选
     expect(
-      tester.widget<CheckboxListTile>(
-        find.widgetWithText(CheckboxListTile, '菜单-m-2'),
-      ).value,
+      tester
+          .widget<CheckboxListTile>(
+            find.widgetWithText(CheckboxListTile, '菜单-m-2'),
+          )
+          .value,
       isTrue,
     );
   });
