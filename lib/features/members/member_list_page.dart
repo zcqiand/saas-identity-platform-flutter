@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
+import 'assign_member_roles_dialog.dart';
 import 'member_detail_page.dart';
 import 'member_form_dialog.dart';
 import 'member_invite_dialog.dart';
@@ -47,6 +48,24 @@ class _MemberListPageState extends ConsumerState<MemberListPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(existing == null ? '创建成功' : '保存成功')),
       );
+    }
+    await ref
+        .read(memberListControllerProvider(widget.tenantId).notifier)
+        .load(silent: true);
+  }
+
+  /// 分配角色入口（REQ-2026-008 M01.F02.I01）：收窗后 SnackBar +
+  /// silent 回刷（roleIds 全量覆盖已生效）。
+  Future<void> _openAssignRoles(TenantMemberUserView m) async {
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (_) =>
+          AssignMemberRolesDialog(tenantId: widget.tenantId, member: m),
+    );
+    if (!mounted) return;
+    if (saved ?? false) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('角色已更新')));
     }
     await ref
         .read(memberListControllerProvider(widget.tenantId).notifier)
@@ -245,11 +264,19 @@ class _MemberListPageState extends ConsumerState<MemberListPage> {
                               title: Text(m.username),
                               subtitle: Text(m.email ?? ''),
                               // 行尾写半边（I04 编辑 / I05 删除 / I08 切换）
-                              // + 状态徽标；IconButton 自吞点击不与行 onTap 打架。
+                              // + 状态徽标 + 角色入口（M01.F02.I01）；
+                              // IconButton 自吞点击不与行 onTap 打架。
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   _StatusBadge(m.status),
+                                  IconButton(
+                                    tooltip: '角色',
+                                    icon: const Icon(
+                                      Icons.assignment_ind_outlined,
+                                    ),
+                                    onPressed: () => _openAssignRoles(m),
+                                  ),
                                   IconButton(
                                     tooltip: '编辑',
                                     icon: const Icon(Icons.edit_outlined),

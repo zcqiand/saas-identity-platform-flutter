@@ -32,14 +32,16 @@ void main() {
 
   void stubRoles(DioAdapter adapter) {
     adapter.onGet('/api/v1/tenants/t-1/roles', (server) {
-      server.reply(200, roleListJson([
-        roleJson(id: 'r-1'),
-        roleJson(id: 'r-2'),
-      ]));
+      server.reply(
+        200,
+        roleListJson([roleJson(id: 'r-1'), roleJson(id: 'r-2')]),
+      );
     });
   }
 
-  testWidgets('分配角色：预勾 member.roleIds + PUT body 全量覆盖（F02.I01 证明）', (tester) async {
+  testWidgets('分配角色：预勾 member.roleIds + PUT body 全量覆盖（F02.I01 证明）', (
+    tester,
+  ) async {
     // fn: M01.F02.I01
     SetTenantMemberRolesRequest? captured;
     final (dio, adapter) = tenantRig();

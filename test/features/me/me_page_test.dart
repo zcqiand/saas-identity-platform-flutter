@@ -21,22 +21,9 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  void stubMe(DioAdapter adapter, {String currentTenantId = 't-1'}) {
-    adapter.onGet('/api/v1/me', (server) {
-      server.reply(200, currentUserJson(overrides: {'currentTenantId': currentTenantId}));
-    });
-    adapter.onGet('/api/v1/me/tenants', (server) {
-      server.reply(200, <Object>[
-        membershipJson(),
-        membershipJson(
-          tenantId: 't-2',
-          overrides: {'status': 'suspended', 'roleIds': <String>['r-1', 'r-2']},
-        ),
-      ]);
-    });
-  }
-
-  testWidgets('我页 whoami：GET /api/v1/me + 用户ID/邮箱/当前租户渲染（I01 证明）', (tester) async {
+  testWidgets('我页 whoami：GET /api/v1/me + 用户ID/邮箱/当前租户渲染（I01 证明）', (
+    tester,
+  ) async {
     // fn: M01.F01.I01
     var mePath = '';
     final (dio, adapter) = tenantRig();
@@ -57,7 +44,9 @@ void main() {
     expect(find.text('t-1'), findsWidgets); // 卡 + 成员关系行
   });
 
-  testWidgets('我页成员关系：GET /api/v1/me/tenants + 行渲染/状态徽标/角色数（F03.I01 证明）', (tester) async {
+  testWidgets('我页成员关系：GET /api/v1/me/tenants + 行渲染/状态徽标/角色数（F03.I01 证明）', (
+    tester,
+  ) async {
     // fn: M01.F03.I01
     var tenantsPath = '';
     final (dio, adapter) = tenantRig();
@@ -71,7 +60,11 @@ void main() {
           membershipJson(),
           membershipJson(
             tenantId: 't-2',
-            overrides: {'status': 'suspended', 'roleIds': <String>['r-1', 'r-2']},
+            overrides: {
+              'status': 'suspended',
+              'roleIds': <String>['r-1', 'r-2'],
+              'joinedAt': '2026-07-15T00:00:00Z',
+            },
           ),
         ];
       });
@@ -85,10 +78,13 @@ void main() {
     expect(find.text('停用'), findsOneWidget); // suspended 徽标
     expect(find.text('角色 1 项'), findsOneWidget);
     expect(find.text('角色 2 项'), findsOneWidget);
-    expect(find.text('2026-06-01'), findsOneWidget); // joinedAt 仅日期
+    expect(find.text('2026-06-01'), findsOneWidget); // t-1 joinedAt 仅日期
+    expect(find.text('2026-07-15'), findsOneWidget); // t-2 joinedAt 仅日期
   });
 
-  testWidgets('切换租户：POST switch + SnackBar + whoami 回刷当前租户（F03.I02 证明）', (tester) async {
+  testWidgets('切换租户：POST switch + SnackBar + whoami 回刷当前租户（F03.I02 证明）', (
+    tester,
+  ) async {
     // fn: M01.F03.I02
     var switchPath = '';
     var meCalls = 0;
@@ -97,7 +93,9 @@ void main() {
       server.reply(200, (RequestOptions options) {
         meCalls++;
         // 首拉当前 t-1；切换回刷后 t-2
-        return currentUserJson(overrides: {'currentTenantId': meCalls == 1 ? 't-1' : 't-2'});
+        return currentUserJson(
+          overrides: {'currentTenantId': meCalls == 1 ? 't-1' : 't-2'},
+        );
       });
     });
     adapter.onGet('/api/v1/me/tenants', (server) {

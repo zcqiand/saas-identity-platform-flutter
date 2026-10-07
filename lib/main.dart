@@ -5,6 +5,7 @@ import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_state.dart';
 import 'core/auth/login_page.dart';
 import 'core/config/app_config.dart';
+import 'features/me/me_page.dart';
 import 'features/tenants/tenants_list_page.dart';
 
 void main() {
@@ -50,6 +51,16 @@ class _Shell extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('SaaS 身份平台 Flutter 端'),
         actions: [
+          // 「我」入口（REQ-2026-008 M01.F01.I01）：whoami + 成员关系 +
+          // 切换当前租户。
+          IconButton(
+            tooltip: '我',
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const MePage()),
+            ),
+          ),
           IconButton(
             tooltip: '登出',
             icon: const Icon(Icons.logout),
