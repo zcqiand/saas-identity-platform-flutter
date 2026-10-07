@@ -39,8 +39,8 @@ void main() {
     });
     await pumpMembers(tester, dio);
     expect(path, '/api/v1/tenants/t-1/members');
-    expect(query['page'], '0');
-    expect(query['pageSize'], '50');
+    expect(query['page'], 0); // dio queryParameters 保 int 型
+    expect(query['pageSize'], 50);
     expect(find.text('user-u-1'), findsOneWidget);
     expect(find.text('u-1@example.com'), findsOneWidget);
     expect(find.text('启用'), findsWidgets);
@@ -133,6 +133,7 @@ void main() {
     await tester.tap(find.text('user-u-1'));
     await tester.pumpAndSettle();
     // 八字段卡：id/tenantId/username/email/status/roleIds/createdAt/updatedAt
+    // （find.text 默认 skipOffstage——列表路由被压 offstage，只数详情卡）
     expect(find.text('user-u-1'), findsWidgets);
     expect(find.text('u-1@example.com'), findsOneWidget);
     expect(find.text('u-1'), findsOneWidget);

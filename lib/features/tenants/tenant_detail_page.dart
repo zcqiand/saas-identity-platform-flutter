@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
+import '../members/member_list_page.dart';
 import 'tenant_detail_controller.dart';
 import 'tenant_status_label.dart';
 
@@ -47,6 +48,19 @@ class _TenantDetailPageState extends ConsumerState<TenantDetailPage> {
         title: Text(
           detailState is TenantDetailLoaded ? detailState.tenant.name : '租户详情',
         ),
+        actions: [
+          // 成员入口（REQ-2026-004 M00.F02）：成员是 tenant-scoped 面。
+          IconButton(
+            tooltip: '成员',
+            icon: const Icon(Icons.group_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => MemberListPage(tenantId: widget.tenantId),
+              ),
+            ),
+          ),
+        ],
       ),
       body: switch (detailState) {
         TenantDetailLoading() => const Center(
