@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
+import '../applications/application_list_page.dart';
 import '../members/member_list_page.dart';
 import '../roles/role_list_page.dart';
 import 'tenant_detail_controller.dart';
@@ -69,6 +70,17 @@ class _TenantDetailPageState extends ConsumerState<TenantDetailPage> {
               context,
               MaterialPageRoute<void>(
                 builder: (_) => RoleListPage(tenantId: widget.tenantId),
+              ),
+            ),
+          ),
+          // 应用入口（REQ-2026-007 M00.F05）：租户订阅的客户端应用面。
+          IconButton(
+            tooltip: '应用',
+            icon: const Icon(Icons.apps),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => ApplicationListPage(tenantId: widget.tenantId),
               ),
             ),
           ),

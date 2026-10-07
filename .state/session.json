@@ -1,13 +1,20 @@
 {
-  "schema": 1,
-  "project": "saas-identity-platform-flutter",
-  "current_task": "项目已初始化，等待第一个需求",
-  "done": ["脚手架生成，门禁全绿"],
-  "next": "跑 /req <需求原话> 落第一份需求文档，同时把 docs/functions/function-tree.md 填成真实功能清单",
-  "open_questions": [],
-  "dont": [
-    "不要改 .harness/stack.json 让门变松",
-    "不要给 skip 的测试挂功能 ID"
-  ],
-  "last_gate_passed_at": null
+ "schema": 1,
+ "project": "saas-identity-platform-flutter",
+ "current_task": "M00 模块全功能面交付完毕；下一域候选 M01/M04（树内规划态）",
+ "done": [
+  "脚手架生成，门禁全绿",
+  "REQ-2026-003/005/006 已 GA（人工验收通过）",
+  "REQ-2026-007 M00.F05 租户应用切片已交付：7 测全绿（4 锚 I01-I04），全量 84/84，gate EXIT=0，trace 29/27 zero inert"
+ ],
+ "next": "继续按序推进规划态行（M01/M04 域候选）；GA 候选批人工验收",
+ "open_questions": [],
+ "dont": [
+  "不要改 .harness/stack.json 让门变松",
+  "不要给 skip 的测试挂功能 ID"
+ ],
+ "last_gate_passed_at": "2026-10-07",
+ "last_slice": "REQ-2026-007 M00.F05 租户应用切片已交付：T1 red 6386791 → T2/T3 本 commit；7 测全绿（4 锚 I01-I04），全量 84/84，gate EXIT=0，trace 29/27 zero inert。探针战果：Iso8601DateTimeSerializer 只收 UTC（本地解析 DateTime 序列化即炸→DioException unknown），已沉淀 flutter 总账",
+ "pending": "GA 候选累积：REQ-2026-004（8 行）+ REQ-2026-005（6 行）+ REQ-2026-006（4 行）+ REQ-2026-007（5 行）待下批人工验收（5108 实走，对端 saas-nextjs:5101）；M00 模块面（F01-F05）机器侧全交付",
+ "updated": "2026-10-07"
 }

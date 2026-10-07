@@ -34,10 +34,7 @@ void main() {
           appJson(),
           appJson(
             clientId: 'saas-console',
-            overrides: {
-              'status': 2,
-              'expireTime': '2027-12-31T00:00:00Z',
-            },
+            overrides: {'status': 2, 'expireTime': '2027-12-31T00:00:00Z'},
           ),
         ]);
       });
@@ -139,18 +136,15 @@ void main() {
       server.reply(200, appListJson([appJson()]));
     });
     await pumpApps(tester, dio);
-    adapter.onPut(
-      '/api/v1/tenants/t-1/applications/lab-management',
-      (server) {
-        server.reply(200, (RequestOptions options) {
-          captured = standardSerializers.deserializeWith(
-            UpdateTenantApplicationRequest.serializer,
-            options.data as Map<String, dynamic>,
-          )!;
-          return appJson(overrides: {'status': 2});
-        });
-      },
-    );
+    adapter.onPut('/api/v1/tenants/t-1/applications/lab-management', (server) {
+      server.reply(200, (RequestOptions options) {
+        captured = standardSerializers.deserializeWith(
+          UpdateTenantApplicationRequest.serializer,
+          options.data as Map<String, dynamic>,
+        )!;
+        return appJson(overrides: {'status': 2});
+      });
+    });
     await tester.tap(find.byTooltip('停用'));
     await tester.pumpAndSettle();
     expect(captured, isNotNull);
@@ -172,15 +166,14 @@ void main() {
     });
     await pumpApps(tester, dio);
     expect(getCalls, 1);
-    adapter.onDelete(
-      '/api/v1/tenants/t-1/applications/lab-management',
-      (server) {
-        server.reply(204, (RequestOptions options) {
-          deleteCalls++;
-          return null;
-        });
-      },
-    );
+    adapter.onDelete('/api/v1/tenants/t-1/applications/lab-management', (
+      server,
+    ) {
+      server.reply(204, (RequestOptions options) {
+        deleteCalls++;
+        return null;
+      });
+    });
     await tester.tap(find.byTooltip('删除'));
     await tester.pumpAndSettle();
     // 确认弹窗明示树口径：取消订阅不删除应用本体
@@ -199,15 +192,14 @@ void main() {
       server.reply(200, appListJson([appJson()]));
     });
     await pumpApps(tester, dio);
-    adapter.onDelete(
-      '/api/v1/tenants/t-1/applications/lab-management',
-      (server) {
-        server.reply(204, (RequestOptions options) {
-          deleteCalls++;
-          return null;
-        });
-      },
-    );
+    adapter.onDelete('/api/v1/tenants/t-1/applications/lab-management', (
+      server,
+    ) {
+      server.reply(204, (RequestOptions options) {
+        deleteCalls++;
+        return null;
+      });
+    });
     await tester.tap(find.byTooltip('删除'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, '取消'));
