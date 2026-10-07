@@ -67,20 +67,17 @@ class _TenantsListPageState extends ConsumerState<TenantsListPage> {
     );
     if (confirmed != true || !mounted) return;
     try {
-      await ref.read(adminTenantsApiProvider).adminTenantsDeleteTenant(
-            id: t.id,
-          );
+      await ref
+          .read(adminTenantsApiProvider)
+          .adminTenantsDeleteTenant(id: t.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('删除成功')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('删除成功')));
       await ref.read(tenantListControllerProvider.notifier).load(silent: true);
     } on DioException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.response == null ? '无法连接服务器' : '删除失败，请重试'),
-        ),
+        SnackBar(content: Text(e.response == null ? '无法连接服务器' : '删除失败，请重试')),
       );
     }
   }

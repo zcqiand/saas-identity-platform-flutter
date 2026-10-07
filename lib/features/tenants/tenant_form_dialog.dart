@@ -140,11 +140,12 @@ class _TenantFormDialogState extends ConsumerState<TenantFormDialog> {
                     TenantStatus.active,
                     TenantStatus.suspended,
                   ])
-                    DropdownMenuItem(value: s, child: Text(tenantStatusLabel(s))),
+                    DropdownMenuItem(
+                      value: s,
+                      child: Text(tenantStatusLabel(s)),
+                    ),
                 ],
-                onChanged: _saving
-                    ? null
-                    : (v) => setState(() => _status = v),
+                onChanged: _saving ? null : (v) => setState(() => _status = v),
               ),
             ],
             if (_error != null)
