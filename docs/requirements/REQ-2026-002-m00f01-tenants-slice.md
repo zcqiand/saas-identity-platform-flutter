@@ -47,7 +47,7 @@ SSO（Phase 3）；iOS。
 
 | # | 前置 | 操作 | 期望 |
 |---|---|---|---|
-| AC-1 | 已登录、mock 后端 | 列表加载 | 显式 `page=0&pageSize=50` query（契约 0 基——M96.F02.I60/I61 判例，2026-10-07 联调勘误）；sealed UiState 四态渲染 |
+| AC-1 | 已登录、mock 后端 | 列表加载 | 显式 `page=0&pageSize=50` query（契约 0 基——shared 树四方契约 0 基判例，2026-10-07 联调勘误）；sealed UiState 四态渲染 |
 | AC-2 | 列表有数据 | 过滤 | keyword 收敛行数；状态 chips 全部/启用/停用，两值标签全覆盖 |
 | AC-3 | 点列表行 | 进详情 | 详情请求 path 带**正确 id**（两租户 fixture 交叉）；六字段卡渲染；suspended 徽标「停用」 |
 | AC-4 | 异常面 | 无响应/403/404 | 「无法连接服务器」/「加载失败，请重试」/「加载失败，请重试」，不崩栈 |
@@ -74,4 +74,4 @@ T5 trace+门禁 → T6 联调+GA+ACCEPTANCE（人批门）。详见
   给出）。环境：saas-nextjs `:5101` + saas-fastapi `:5107`（CORS 预检实证）+
   saas-flutter `:5108`；凭据 alice/dev123456（clientId=`saas-console`）。
   GA 翻转 M00 模块/F01/I01/I03 共 4 行随批执行（`tree_change.py --apply` 免批通道，
-  lab M03.F01 先例同构）。
+  lab 家族接样单切片先例同构）。

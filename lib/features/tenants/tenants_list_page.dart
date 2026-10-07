@@ -89,7 +89,7 @@ class _TenantsListPageState extends ConsumerState<TenantsListPage> {
       // 创建入口（I02）：FAB 悬浮，弹窗双态复用（I04 编辑走行内入口）。
       floatingActionButton: FloatingActionButton(
         tooltip: '新建租户',
-        onPressed: () => _openForm(),
+        onPressed: _openForm,
         child: const Icon(Icons.add),
       ),
       body: Column(
