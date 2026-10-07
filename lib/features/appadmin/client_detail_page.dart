@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:saas_identity_platform_flutter/features/appadmin/client_status_label.dart';
+import 'package:saas_identity_platform_flutter/features/appmenus/menu_tree_page.dart';
 import 'package:saas_identity_platform_flutter/generated/saas_shared_generated.dart';
 
 import 'app_admin_providers.dart';
@@ -52,7 +53,22 @@ class _ClientDetailPageState extends ConsumerState<ClientDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.clientId)),
+      appBar: AppBar(
+        title: Text(widget.clientId),
+        // 菜单管理入口（REQ-2026-011 M04.F04.I01）：client-scoped 管理面。
+        actions: [
+          IconButton(
+            tooltip: '菜单',
+            icon: const Icon(Icons.menu_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => MenuTreePage(clientId: widget.clientId),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: _error != null
           ? Center(
               child: Column(

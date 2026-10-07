@@ -1,21 +1,22 @@
 {
  "schema": 1,
  "project": "saas-identity-platform-flutter",
- "current_task": "M00 模块面 + M01 用户管理切片（REQ-2026-008）机器侧交付完毕；下一域候选 M04 应用管理",
+ "current_task": "M00 模块面 + M01 切片 + M04.F01/F02 应用管理第一片（REQ-2026-010）机器侧交付；下一片 M04.F04 菜单管理 flutter 侧",
  "done": [
   "脚手架生成，门禁全绿",
   "REQ-2026-003/005/006 已 GA（人工验收通过）",
   "REQ-2026-007 M00.F05 租户应用切片已交付：7 测全绿（4 锚 I01-I04），全量 84/84，gate EXIT=0，trace 29/27 zero inert",
-  "REQ-2026-008 M01 用户管理切片已交付：7 测全绿（4 锚 F01.I01/F02.I01/F03.I01/F03.I02），全量 91/91，gate EXIT=0，trace 33/31 zero inert"
+  "REQ-2026-008 M01 用户管理切片已交付：7 测全绿（4 锚 F01.I01/F02.I01/F03.I01/F03.I02），全量 91/91，gate EXIT=0，trace 33/31 zero inert",
+  "REQ-2026-010 M04 应用管理第一片已交付：8 测全绿（7 锚 F01.I01-I06+F02.I01），全量 99/99，gate EXIT=0，trace 40/38 zero inert"
  ],
- "next": "继续按序推进规划态行（M04 应用管理域候选）；GA 候选批人工验收",
+ "next": "M04.F04 菜单管理 flutter 侧（7 I，I08 待 PLAN-2026-004 契约修正排除）；M04.F03 身份认证后续",
  "open_questions": [],
  "dont": [
   "不要改 .harness/stack.json 让门变松",
   "不要给 skip 的测试挂功能 ID"
  ],
  "last_gate_passed_at": "2026-10-07",
- "last_slice": "REQ-2026-008 M01 用户管理切片：T1 red 9759146（REQ + 树 8 行翻转 + 测试先行）→ T2/T3 45fe825（MePage whoami/成员关系/切换 + 分配角色弹窗 + 「我」入口）。测试名 2026-06-01 撞行教入 fixture：多行同字段断言要用 findsOneWidget 时各 fixture 日期须差异化",
- "pending": "GA 候选累积：REQ-2026-004（8 行）+ REQ-2026-005（6 行）+ REQ-2026-006（4 行）+ REQ-2026-007（5 行）+ REQ-2026-008（4 行）待下批人工验收（5108 实走，对端 saas-nextjs:5101）；M00 模块面 F01-F05 + M01 切片机器侧全交付",
+ "last_slice": "REQ-2026-010 M04 应用管理第一片：T1 red 36fdef7（REQ + 树 10 行翻转）→ T2/T3 86455d8（ClientListPage 列表/启停/编辑/删除 + ClientFormDialog 密钥表单侧生成 + ClientDetailPage 密钥不回显/公共元数据卡 + 「应用」壳入口）。status int 1=启用/0=停用 家族约定",
+ "pending": "GA 候选累积：REQ-2026-004（8 行）+ REQ-2026-005（6 行）+ REQ-2026-006（4 行）+ REQ-2026-007（5 行）+ REQ-2026-008（4 行）+ REQ-2026-010（7 行）待下批人工验收（5108 实走，对端 saas-nextjs:5101）",
  "updated": "2026-10-07"
 }

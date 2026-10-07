@@ -17,25 +17,30 @@ import '../../support/tenant_fixtures.dart';
 void main() {
   const root = '00000000-0000-0000-0000-000000000000';
 
-  Map<String, dynamic> treeMenus() => <String, dynamic>{
-    // d-1(目录, 根) → m-1/m-2(菜单, 同级) → b-1(按钮, 挂 m-1)
-    'items': <Map<String, dynamic>>[
-      menuJson(id: 'd-1', overrides: {
+  /// list 端点回 BuiltList<SysMenu> —— 裸数组（无 items 包裹）。
+  /// d-1(目录, 根) → m-1/m-2(菜单, 同级) → b-1(按钮, 挂 m-1)
+  List<Map<String, dynamic>> treeMenus() => <Map<String, dynamic>>[
+    menuJson(
+      id: 'd-1',
+      overrides: {
         'clientId': 'app-1',
         'title': '目录-d-1',
         'type': 'directory',
         'path': null,
-      }),
-      menuJson(id: 'm-1', overrides: {'clientId': 'app-1', 'parentId': 'd-1'}),
-      menuJson(id: 'm-2', overrides: {'clientId': 'app-1', 'parentId': 'd-1'}),
-      menuJson(id: 'b-1', overrides: {
+      },
+    ),
+    menuJson(id: 'm-1', overrides: {'clientId': 'app-1', 'parentId': 'd-1'}),
+    menuJson(id: 'm-2', overrides: {'clientId': 'app-1', 'parentId': 'd-1'}),
+    menuJson(
+      id: 'b-1',
+      overrides: {
         'clientId': 'app-1',
         'parentId': 'm-1',
         'type': 'button',
         'path': null,
-      }),
-    ],
-  };
+      },
+    ),
+  ];
 
   Future<void> pumpMenus(WidgetTester tester, Dio dio) async {
     await tester.pumpWidget(
@@ -53,9 +58,14 @@ void main() {
     });
   }
 
-  testWidgets('菜单列表：GET /api/v1/clients/{clientId}/menus + 组树 DFS 层级渲染（F04.I01 证明）', (
-    tester,
-  ) async {
+  /// 行作用域动作 finder：行尾多 IconButton（上移/下移/移动/编辑/删除），
+  /// 必须锁定目标行再点（DFS 序 .last ≠ 目标行）。
+  Finder rowAction(String rowTitle, String tooltip) => find.descendant(
+    of: find.ancestor(of: find.text(rowTitle), matching: find.byType(ListTile)),
+    matching: find.byTooltip(tooltip),
+  );
+
+  testWidgets('菜单列表：组树 DFS 层级渲染（F04.I01 证明）', (tester) async {
     // fn: M04.F04.I01
     var listPath = '';
     final (dio, adapter) = tenantRig();
@@ -81,7 +91,7 @@ void main() {
     expect(titles.indexOf('菜单-m-1'), lessThan(titles.indexOf('菜单-m-2')));
   });
 
-  testWidgets('创建菜单：POST body 类型/父级/路径 + 回刷（F04.I02 证明）', (tester) async {
+  testWidgets('创建菜单：POST 类型/父级/路径（F04.I02 证明）', (tester) async {
     // fn: M04.F04.I02
     CreateSysMenuRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -120,12 +130,15 @@ void main() {
     adapter.onGet('/api/v1/clients/app-1/menus/m-1', (server) {
       server.reply(200, (RequestOptions options) {
         detailPath = options.uri.path;
-        return menuJson(id: 'm-1', overrides: {
-          'clientId': 'app-1',
-          'parentId': 'd-1',
-          'perms': 'lab.read',
-          'icon': 'home',
-        });
+        return menuJson(
+          id: 'm-1',
+          overrides: {
+            'clientId': 'app-1',
+            'parentId': 'd-1',
+            'perms': 'lab.read',
+            'icon': 'home',
+          },
+        );
       });
     });
     await tester.tap(find.text('菜单-m-1'));
@@ -137,7 +150,7 @@ void main() {
     expect(find.text('home'), findsOneWidget); // icon
   });
 
-  testWidgets('更新菜单：PATCH 不带 parentId（不动父子结构）+ 响应回填（F04.I04 证明）', (tester) async {
+  testWidgets('更新菜单：PATCH 不带 parentId 回填（F04.I04 证明）', (tester) async {
     // fn: M04.F04.I04
     UpdateSysMenuRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -155,7 +168,7 @@ void main() {
         );
       });
     });
-    await tester.tap(find.byTooltip('编辑').first);
+    await tester.tap(rowAction('菜单-m-1', '编辑'));
     await tester.pumpAndSettle();
     await tester.enterText(find.widgetWithText(TextField, '标题'), '改名菜单');
     await tester.tap(find.widgetWithText(FilledButton, '保存'));
@@ -167,7 +180,7 @@ void main() {
     expect(find.text('改名菜单'), findsOneWidget);
   });
 
-  testWidgets('删除菜单：确认明示级联语义 + DELETE + 回刷（F04.I05 证明）', (tester) async {
+  testWidgets('删除菜单：级联语义 + DELETE（F04.I05 证明）', (tester) async {
     // fn: M04.F04.I05
     var deletePath = '';
     final (dio, adapter) = tenantRig();
@@ -179,7 +192,7 @@ void main() {
         return <String, dynamic>{};
       });
     });
-    await tester.tap(find.byTooltip('删除').last);
+    await tester.tap(rowAction('菜单-b-1', '删除'));
     await tester.pumpAndSettle();
     expect(find.textContaining('级联'), findsOneWidget); // 子菜单+角色授权一并清理
     await tester.tap(find.widgetWithText(TextButton, '删除').last);
@@ -188,7 +201,7 @@ void main() {
     expect(find.text('菜单已删除'), findsOneWidget);
   });
 
-  testWidgets('同级排序：上移 → PUT /reorder 同级新顺序（F04.I06 证明）', (tester) async {
+  testWidgets('同级排序：上移 PUT /reorder（F04.I06 证明）', (tester) async {
     // fn: M04.F04.I06
     ReorderSysMenuRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -200,10 +213,10 @@ void main() {
           ReorderSysMenuRequest.serializer,
           options.data as Map<String, dynamic>,
         )!;
-        return treeMenus()['items'];
+        return treeMenus();
       });
     });
-    await tester.tap(find.byTooltip('上移').last);
+    await tester.tap(rowAction('菜单-m-2', '上移'));
     await tester.pumpAndSettle();
     expect(captured, isNotNull);
     // m-2 原列 m-1 之后；上移后同级新顺序 = [m-2, m-1]（含自身全量）
@@ -211,7 +224,7 @@ void main() {
     expect(find.text('排序已更新'), findsOneWidget);
   });
 
-  testWidgets('切换父级：PATCH /parent 换挂目录（F04.I07 证明）', (tester) async {
+  testWidgets('切换父级：PATCH /parent（F04.I07 证明）', (tester) async {
     // fn: M04.F04.I07
     ClientMenusMoveSysMenuRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -229,7 +242,7 @@ void main() {
         );
       });
     });
-    await tester.tap(find.byTooltip('移动').last);
+    await tester.tap(rowAction('菜单-m-2', '移动'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('菜单-m-1').last); // 父级选择：挂到 m-1
     await tester.pumpAndSettle();
