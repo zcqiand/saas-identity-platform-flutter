@@ -5,6 +5,7 @@ import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_state.dart';
 import 'core/auth/login_page.dart';
 import 'core/config/app_config.dart';
+import 'features/appadmin/client_list_page.dart';
 import 'features/me/me_page.dart';
 import 'features/tenants/tenants_list_page.dart';
 
@@ -59,6 +60,15 @@ class _Shell extends ConsumerWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(builder: (_) => const MePage()),
+            ),
+          ),
+          // 「应用」入口（REQ-2026-010 M04.F01.I01）：平台 admin 应用管理。
+          IconButton(
+            tooltip: '应用',
+            icon: const Icon(Icons.apps),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const ClientListPage()),
             ),
           ),
           IconButton(

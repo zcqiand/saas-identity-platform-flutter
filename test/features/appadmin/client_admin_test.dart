@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http_mock_adapter/http_mock_adapter.dart';
 
 import 'package:saas_identity_platform_flutter/core/auth/providers.dart';
 import 'package:saas_identity_platform_flutter/features/appadmin/client_detail_page.dart';
@@ -59,9 +60,7 @@ void main() {
     expect(find.text('停用'), findsOneWidget); // status 0
   });
 
-  testWidgets('创建应用：POST 必填五件（密钥自动生成 sec- 前缀）+ 回刷（F01.I02 证明）', (
-    tester,
-  ) async {
+  testWidgets('创建应用：POST 必填五件（密钥自动生成 sec- 前缀）+ 回刷（F01.I02 证明）', (tester) async {
     // fn: M04.F01.I02
     CreateOAuthClientRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -78,10 +77,7 @@ void main() {
     });
     await tester.tap(find.byTooltip('新建应用'));
     await tester.pumpAndSettle();
-    await tester.enterText(
-      find.widgetWithText(TextField, '客户端标识'),
-      'app-new',
-    );
+    await tester.enterText(find.widgetWithText(TextField, '客户端标识'), 'app-new');
     await tester.enterText(find.widgetWithText(TextField, '应用名称'), '新应用');
     await tester.enterText(
       find.widgetWithText(TextField, '回调地址'),
@@ -99,9 +95,7 @@ void main() {
     expect(find.text('应用已创建'), findsOneWidget);
   });
 
-  testWidgets('应用详情：GET 单体 + 全字段渲染 + 密钥不回显（F01.I03 证明）', (
-    tester,
-  ) async {
+  testWidgets('应用详情：GET 单体 + 全字段渲染 + 密钥不回显（F01.I03 证明）', (tester) async {
     // fn: M04.F01.I03
     var detailPath = '';
     final (dio, adapter) = tenantRig();
@@ -123,10 +117,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(detailPath, '/api/v1/admin/clients/app-1');
     expect(find.text('应用-app-1'), findsWidgets);
-    expect(
-      find.text('authorization_code,client_credentials'),
-      findsOneWidget,
-    );
+    expect(find.text('authorization_code,client_credentials'), findsOneWidget);
     expect(find.text('https://lab.local/cb'), findsOneWidget);
     expect(find.text('lab.read'), findsOneWidget);
     expect(find.text('3600'), findsOneWidget); // accessTokenValidity
@@ -134,9 +125,7 @@ void main() {
     expect(find.text('密钥不回显'), findsOneWidget); // 契约不返明文
   });
 
-  testWidgets('编辑应用：PUT body 名称/回调/scopes + 响应回填（F01.I04 证明）', (
-    tester,
-  ) async {
+  testWidgets('编辑应用：PUT body 名称/回调/scopes + 响应回填（F01.I04 证明）', (tester) async {
     // fn: M04.F01.I04
     UpdateOAuthClientRequest? captured;
     final (dio, adapter) = tenantRig();
@@ -149,19 +138,13 @@ void main() {
           options.data as Map<String, dynamic>,
         )!;
         return clientJson(
-          overrides: {
-            'clientName': '改名应用',
-            'scopes': 'lab.read,lab.write',
-          },
+          overrides: {'clientName': '改名应用', 'scopes': 'lab.read,lab.write'},
         );
       });
     });
     await tester.tap(find.byTooltip('编辑').first);
     await tester.pumpAndSettle();
-    await tester.enterText(
-      find.widgetWithText(TextField, '应用名称'),
-      '改名应用',
-    );
+    await tester.enterText(find.widgetWithText(TextField, '应用名称'), '改名应用');
     await tester.enterText(
       find.widgetWithText(TextField, 'Scopes'),
       'lab.read,lab.write',
@@ -176,9 +159,7 @@ void main() {
     expect(find.text('改名应用'), findsOneWidget); // PUT 响应回填，无重拉
   });
 
-  testWidgets('删除应用：确认明示吊销语义 + DELETE + 回刷（F01.I05 证明）', (
-    tester,
-  ) async {
+  testWidgets('删除应用：确认明示吊销语义 + DELETE + 回刷（F01.I05 证明）', (tester) async {
     // fn: M04.F01.I05
     var deletePath = '';
     final (dio, adapter) = tenantRig();
@@ -187,7 +168,7 @@ void main() {
     adapter.onDelete('/api/v1/admin/clients/app-2', (server) {
       server.reply(200, (RequestOptions options) {
         deletePath = options.uri.path;
-        return <void>;
+        return <String, dynamic>{};
       });
     });
     await tester.tap(find.byTooltip('删除').last);
@@ -226,9 +207,7 @@ void main() {
     expect(find.text('应用-app-1'), findsWidgets); // 管理面 + 公共面同 clientId
   });
 
-  testWidgets('启停应用：PUT status 0/1 行内即时翻转（F02.I01 证明）', (
-    tester,
-  ) async {
+  testWidgets('启停应用：PUT status 0/1 行内即时翻转（F02.I01 证明）', (tester) async {
     // fn: M04.F02.I01
     AdminClientsSetClientStatusRequest? captured;
     final (dio, adapter) = tenantRig();
