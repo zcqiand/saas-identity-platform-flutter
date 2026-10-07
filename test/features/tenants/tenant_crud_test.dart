@@ -24,43 +24,40 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    'FAB 创建：POST body 恰 tenantKey/name + 收窗 + SnackBar + silent 回刷（@entry I02 证明）',
-    (tester) async {
-      // fn: M00.F01.I02
-      CreateTenantRequest? captured;
-      var getCalls = 0;
-      final (dio, adapter) = tenantRig();
-      adapter.onGet('/api/v1/admin/tenants', (server) {
-        server.reply(200, (RequestOptions options) {
-          if (options.method == 'POST') {
-            captured = standardSerializers.deserializeWith(
-              CreateTenantRequest.serializer,
-              options.data as Map<String, dynamic>,
-            )!;
-            return tenantJson(id: 't-new', overrides: {'name': 'Acme'});
-          }
-          getCalls++;
-          return tenantListJson([tenantJson(id: 't-1')]);
-        });
+  testWidgets('FAB 创建：POST body 恰两字段 + 收窗回刷（I02 证明）', (tester) async {
+    // fn: M00.F01.I02
+    CreateTenantRequest? captured;
+    var getCalls = 0;
+    final (dio, adapter) = tenantRig();
+    adapter.onGet('/api/v1/admin/tenants', (server) {
+      server.reply(200, (RequestOptions options) {
+        if (options.method == 'POST') {
+          captured = standardSerializers.deserializeWith(
+            CreateTenantRequest.serializer,
+            options.data as Map<String, dynamic>,
+          )!;
+          return tenantJson(id: 't-new', overrides: {'name': 'Acme'});
+        }
+        getCalls++;
+        return tenantListJson([tenantJson(id: 't-1')]);
       });
-      await pumpList(tester, dio);
-      expect(getCalls, 1);
-      await tester.tap(find.byTooltip('新建租户'));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.widgetWithText(TextField, '租户标识'), 'acme');
-      await tester.enterText(find.widgetWithText(TextField, '租户名称'), 'Acme');
-      await tester.tap(find.widgetWithText(FilledButton, '保存'));
-      await tester.pumpAndSettle();
-      expect(captured, isNotNull);
-      expect(captured!.tenantKey, 'acme');
-      expect(captured!.name, 'Acme');
-      // 收窗 + SnackBar + 列表 silent 回刷（第二轮流向 GET）
-      expect(find.byType(TenantFormDialog), findsNothing);
-      expect(find.text('创建成功'), findsOneWidget);
-      expect(getCalls, 2);
-    },
-  );
+    });
+    await pumpList(tester, dio);
+    expect(getCalls, 1);
+    await tester.tap(find.byTooltip('新建租户'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.widgetWithText(TextField, '租户标识'), 'acme');
+    await tester.enterText(find.widgetWithText(TextField, '租户名称'), 'Acme');
+    await tester.tap(find.widgetWithText(FilledButton, '保存'));
+    await tester.pumpAndSettle();
+    expect(captured, isNotNull);
+    expect(captured!.tenantKey, 'acme');
+    expect(captured!.name, 'Acme');
+    // 收窗 + SnackBar + 列表 silent 回刷（第二轮流向 GET）
+    expect(find.byType(TenantFormDialog), findsNothing);
+    expect(find.text('创建成功'), findsOneWidget);
+    expect(getCalls, 2);
+  });
 
   testWidgets('创建必填缺失：文案上屏不发请求（AC-2 fail-fast）', (tester) async {
     var writeCalls = 0;

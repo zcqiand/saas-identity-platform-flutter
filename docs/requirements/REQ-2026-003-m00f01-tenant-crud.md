@@ -47,3 +47,15 @@
 | M00.F01.I02 | 创建租户 | 变更 | 规划 → 开发中（T1） | T1, T2 |
 | M00.F01.I04 | 更新租户 | 变更 | 规划 → 开发中（T1） | T1, T2 |
 | M00.F01.I05 | 删除租户 | 变更 | 规划 → 开发中（T1） | T1, T2 |
+
+
+## 5. 人工验收记录（GA 前置锚）
+
+- 远门 2026-10-07：53/53 测试 + analyze 0 + suite 门禁全绿 EXIT=0；trace M00.F01
+  恰 5 ID（I01~I05 全锚，本切片 I02/I04/I05 各 1，零 inert）。
+- **✅ 2026-10-07 人工验收通过**：AC-1~AC-5 全路径过（浏览器 http://localhost:5108
+  走 FAB 创建/必填 fail-fast/行编辑回填+状态下拉/删除确认级联文案/取消零请求；
+  环境与分场景实录见 `ACCEPTANCE-2026-10-07-m00f01-crud.md`，人批同日给出）。
+  环境：saas-nextjs `:5101` + saas-flutter `:5108`；凭据 alice/dev123456
+  （clientId=saas-console）。GA 翻转 I02/I04/I05 共 3 行随批执行
+  （`tree_change.py --apply` 免批通道，REQ-2026-002 先例同构）。
