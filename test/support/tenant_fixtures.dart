@@ -213,3 +213,48 @@ Map<String, dynamic> switchResponseJson({
   };
   return <String, dynamic>{...base, ...overrides};
 }
+
+/// REQ-2026-010 M04 应用管理切片 fixtures（生成物 OAuthClient 十二字段，
+/// status int 家族约定 1=启用/0=停用；grantTypes/redirectUris/scopes 逗号串）。
+Map<String, dynamic> clientJson({
+  String clientId = 'app-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': 'c-$clientId',
+    'clientId': clientId,
+    'clientName': '应用-$clientId',
+    'grantTypes': 'authorization_code,client_credentials',
+    'redirectUris': 'https://lab.local/cb',
+    'scopes': 'lab.read',
+    'accessTokenValidity': 3600,
+    'refreshTokenValidity': 86400,
+    'autoApprove': false,
+    'status': 1,
+    'createdAt': _now,
+    'updatedAt': _now,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+/// 分页响应 AdminClientsListClients200Response 四字段。
+Map<String, dynamic> clientListJson(List<Map<String, dynamic>> items) =>
+    <String, dynamic>{
+      'items': items,
+      'page': 1,
+      'pageSize': 20,
+      'total': items.length,
+    };
+
+/// 公共元数据 OAuthClientPublicInfo 三字段（匿名端点，不含配置/密钥）。
+Map<String, dynamic> clientPublicJson({
+  String clientId = 'app-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'clientId': clientId,
+    'clientName': '应用-$clientId',
+    'status': 1,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
