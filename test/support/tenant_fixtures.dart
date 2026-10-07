@@ -168,3 +168,48 @@ Map<String, dynamic> appListJson(List<Map<String, dynamic>> items) =>
       'pageSize': 50,
       'total': items.length,
     };
+
+/// REQ-2026-008 M01 切片 fixtures（生成物口径，禁超面）。
+/// TenantMembership 六字段：id/userId/tenantId/roleIds/status(枚举)/joinedAt。
+Map<String, dynamic> membershipJson({
+  String tenantId = 't-1',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': 'm-$tenantId',
+    'userId': 'u-1',
+    'tenantId': tenantId,
+    'roleIds': <String>['r-1'],
+    'status': 'active',
+    'joinedAt': '2026-06-01T00:00:00Z',
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+/// CurrentUser 四字段：id/email?/memberships/currentTenantId?（生成物无
+/// displayName——树口径说明滞后，API 面只认生成物）。
+Map<String, dynamic> currentUserJson({
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': 'u-1',
+    'email': 'u-1@example.com',
+    'memberships': <Map<String, dynamic>>[membershipJson()],
+    'currentTenantId': 't-1',
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+/// SwitchTenantResponse 四字段（OAuth 态契约形状；UI 只消费成功事实）。
+Map<String, dynamic> switchResponseJson({
+  String tenantId = 't-2',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'accessToken': 'at-$tenantId',
+    'refreshToken': 'rt-$tenantId',
+    'expiresAt': '2027-01-01T00:00:00Z',
+    'tenantId': tenantId,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
