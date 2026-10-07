@@ -145,7 +145,7 @@
 |---|---|---|---|
 | M04.F01 | 应用维护 | 应用 CRUD + 公共 client 元数据 | 开发中 |
 | M04.F02 | 应用启用/停用 | `status` 切换；禁用后 OAuth/token 端点立即拒绝 | 开发中 |
-| M04.F03 | 身份认证 | OAuth authorize + token + refresh | 规划 |
+| M04.F03 | 身份认证 | OAuth authorize + token + refresh | 开发中 |
 | M04.F04 | 菜单管理 | 菜单 CRUD + 结构 + 当前用户菜单（REQ-2026-008 瘦身切片已上线：CRUD+组树；「当前用户菜单」待 PLAN-2026-004 shared 契约修正后补角） | 开发中 |
 
 ### M04.F01 应用维护
@@ -173,7 +173,7 @@
 
 | 子项 ID | 名称 | 类型 | 交付 | 说明 | 状态 |
 |---|---|---|---|---|---|
-| M04.F03.I01 | 授权码签发 | 接口 | 前端+后端 | 校验 session+redirect_uri+scope 后签发一次性 authorization_code | 规划 |
+| M04.F03.I01 | 授权码签发 | 接口 | 前端+后端 | 校验 session+redirect_uri+scope 后签发一次性 authorization_code | 开发中 |
 | M04.F03.I02 | OIDC token 端点（双 grant） | 接口 | 前端+后端 | `/oauth/token` 接收 authorization_code / refresh_token 双 grant，返回 access_token（可同时轮换 refresh_token） | 规划 |
 
 ### M04.F04 菜单管理
