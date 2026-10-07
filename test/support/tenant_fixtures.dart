@@ -143,3 +143,28 @@ Map<String, dynamic> roleGrantJson(List<String> menuIds) => <String, dynamic>{
   'menuIds': menuIds,
   'updatedAt': _now,
 };
+
+/// M00.F05 租户应用切片 fixtures（TenantApplication 六字段，status int
+/// 0=pending/1=active/2=disabled；寻址键 clientId）。
+Map<String, dynamic> appJson({
+  String clientId = 'lab-management',
+  Map<String, Object?> overrides = const {},
+}) {
+  final base = <String, dynamic>{
+    'id': 'ta-$clientId',
+    'tenantId': 't-1',
+    'clientId': clientId,
+    'status': 1,
+    'expireTime': null,
+    'createdAt': _now,
+  };
+  return <String, dynamic>{...base, ...overrides};
+}
+
+Map<String, dynamic> appListJson(List<Map<String, dynamic>> items) =>
+    <String, dynamic>{
+      'items': items,
+      'page': 0,
+      'pageSize': 50,
+      'total': items.length,
+    };
