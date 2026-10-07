@@ -27,6 +27,7 @@ void main() {
   }
 
   testWidgets('成员列表：page=0&pageSize=50 + 行渲染（I01 证明）', (tester) async {
+    // fn: M00.F02.I01
     var path = '';
     var query = <String, dynamic>{};
     final (dio, adapter) = tenantRig();
@@ -47,6 +48,7 @@ void main() {
   });
 
   testWidgets('FAB 创建成员：POST body 恰四字段 + 收窗回刷（I02 证明）', (tester) async {
+    // fn: M00.F02.I02
     CreateSysUserRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/members', (server) {
@@ -122,6 +124,7 @@ void main() {
   });
 
   testWidgets('行进详情：八字段卡（I03 证明）', (tester) async {
+    // fn: M00.F02.I03
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/members', (server) {
       server.reply(200, memberListJson([memberJson()]));
@@ -142,6 +145,7 @@ void main() {
   });
 
   testWidgets('行编辑：PUT body 恰 email/mobile（I04 证明）', (tester) async {
+    // fn: M00.F02.I04
     UpdateSysUserRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/members', (server) {
@@ -184,6 +188,7 @@ void main() {
   });
 
   testWidgets('行删除：确认文案 + DELETE + 回刷（I05 证明）', (tester) async {
+    // fn: M00.F02.I05
     var deleteCalls = 0;
     var getCalls = 0;
     final (dio, adapter) = tenantRig();
@@ -234,6 +239,7 @@ void main() {
   });
 
   testWidgets('appbar 邀请：POST invitations body 恰两字段（I06 证明）', (tester) async {
+    // fn: M00.F02.I06
     TenantMembersInviteTenantUserRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/members', (server) {
@@ -265,6 +271,7 @@ void main() {
   });
 
   testWidgets('行状态动作：停用 POST /status body（I08 证明）', (tester) async {
+    // fn: M00.F02.I08
     TenantMembersChangeTenantUserStatusRequest? captured;
     final (dio, adapter) = tenantRig();
     adapter.onGet('/api/v1/tenants/t-1/members', (server) {
