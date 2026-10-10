@@ -1,5 +1,11 @@
 # 更新日志
 
+## v0.2.2 — 2026-10-10
+
+- 首航修复：Dockerfile 加 `git config --global --add safe.directory /opt/flutter`——
+  tarball 属主 uid ≠ 容器运行用户触发 git dubious ownership，`flutter --version` 崩
+  连带版本断言误红（v0.2.1 废 tag 留红无实害，规约禁删覆盖）
+
 ## v0.2.1 — 2026-10-10
 
 - prod 部署链启用（X08 扩展槽位）：`https://saas-flutter.xiangru.uk`——Dockerfile（官方 tarball builder 3.47.6 + dart-define 烘焙 + 烘焙断言）、nginx.conf、deploy/ 五件套、首条 CI（test 四门对齐 harness + tag 触发 deploy）

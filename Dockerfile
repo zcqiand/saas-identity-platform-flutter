@@ -20,6 +20,10 @@ RUN curl -fsSL "https://storage.googleapis.com/flutter_infra_release/releases/st
   | tar -xJ -C /opt
 ENV PATH="/opt/flutter/bin:${PATH}"
 
+# tarball 内文件属主 uid ≠ 容器运行用户 → git 报 dubious ownership，flutter 工具
+# 全部命令（含 --version）即崩。放行 SDK 目录属配置修复，非门禁放宽。
+RUN git config --global --add safe.directory /opt/flutter
+
 # 版本钉死断言：tarball URL 与本断言双保险，任何一环漂移都 fail-fast
 RUN flutter --version | grep -q 'Flutter 3.47.6' \
   || { echo "ERROR: Flutter 版本漂移，期望 3.47.6" >&2; exit 1; }
