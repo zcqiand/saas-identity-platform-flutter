@@ -1,0 +1,13 @@
+# 构建上下文瘦身：本地 build/ 与 .dart_tool/ 体积巨大（gitignored，CI checkout 无）
+build/
+.dart_tool/
+android/
+test/
+docs/
+.state/
+.idea/
+.vscode/
+.openapi-tmp/
+*.iml
+.git
+.gitattributes

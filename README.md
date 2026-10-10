@@ -33,6 +33,19 @@ bash scripts/gen-shared.sh
 > token 存储走 `TokenStore` 缝：Android Keystore 级 / **Web 端 localStorage 级**
 > （flutter_secure_storage web 实现，与 react 参照同级，联调正式凭据前知悉）。
 
+## 生产部署
+
+prod = `https://saas-flutter.xiangru.uk`（saas 家族 X08 扩展槽位，2026-10-10 启用）。
+形态与 saas-react 同款：CI 构建 Flutter Web release → `nginx:alpine` 静态容器（容器内 :80）→ VPS `127.0.0.1:5108:80` → nginx vhost 反代。prod 配置由根 `Dockerfile` `--dart-define` 烘焙（`API_BASE_URL=https://saas-nextjs.xiangru.uk` + `SAAS_CLIENT_ID=saas-console`），禁兜底、缺失 fail-fast。
+
+```bash
+# tag 即放行：全量回归绿后打（tag 命名铁律 v<X>.<Y>.<Z>-<YYYYMMDD>）
+git tag v0.2.1-20261010
+git push origin master v0.2.1-20261010   # CI test → 镜像 → VPS → vhost 自渲染，全自动
+```
+
+首次配置需 5 个 GitHub secrets（无 app secret）：`DOCKER_USERNAME` / `DOCKER_PASSWORD` / `VPS_HOST` / `VPS_USER` / `VPS_SSH_KEY`。回滚 = VPS 重跑 deploy 脚本带旧 tag。
+
 ## 功能特性
 
 镜像 saas-swift 树 M00/M01/M04 三模块（F 级 diff 实证与 shared 全树一致），全部 `规划`（学习路线分期：Phase 1 认证 → Phase 2 租户列表 → Phase 3 SSO 跳板）。

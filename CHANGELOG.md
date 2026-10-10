@@ -1,5 +1,10 @@
 # 更新日志
 
+## v0.2.1 — 2026-10-10
+
+- prod 部署链启用（X08 扩展槽位）：`https://saas-flutter.xiangru.uk`——Dockerfile（官方 tarball builder 3.47.6 + dart-define 烘焙 + 烘焙断言）、nginx.conf、deploy/ 五件套、首条 CI（test 四门对齐 harness + tag 触发 deploy）
+- 家族约定同步：X08 行进 deploy 链（saas.md + multi-repo-family.md §6/§6.1 两处同 commit）；5 后端 deploy 脚本 CORS 追加 prod origin
+
 ## v0.2.0 — 2026-10-05
 
 - M01 认证 Phase 1：密码直登（/auth/login，clientId 门 SAAS_CLIENT_ID）、token 安全存储（TokenStore 缝：SecureTokenStore/InMemory）、401 会话失效（SessionGuard 缝）、登出（best-effort+清必达）、登录页（@entry M01.F04.I03）

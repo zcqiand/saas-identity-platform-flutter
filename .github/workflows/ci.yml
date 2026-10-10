@@ -1,0 +1,86 @@
+name: ci
+
+# saas-identity-platform-flutter (Flutter 3.47.6 stable, Android + Web)
+# 推送链:
+# - branch push(master)/PR → 只跑 test(对齐 .harness/stack.json 门禁 L1-L4;本仓 mock-friendly,
+#   无 Key 无 Docker 无网全绿,不需要 services 容器)
+# - tag push(v<X>.<Y>.<Z>-<YYYYMMDD> per tag 铁律) → test + web 镜像 build & push + VPS 部署
+#   (saas-flutter.xiangru.uk,saas 家族 X08 扩展槽位 2026-10-10 启用)
+# 镜像名/SSH 路径/部署脚本用 ${{ github.event.repository.name }} 避免跨仓劫持。
+on:
+  push:
+    branches: [master]
+    tags:
+      - "v*"
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # 版本钉死:与 version-lock.json 的 flutter 3.47.6 一致(禁漂移)
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.6"
+          channel: stable
+          cache: true
+      - name: pub get
+        run: flutter pub get
+      # 以下四步与 .harness/stack.json 门禁逐条对齐(本地门禁同一套命令):
+      # 不带 --dart-define —— 编译期空串不红,运行期 fail-fast 才红(prod 烘焙只在
+      # Dockerfile 里做,与 dev 姿态一致)
+      - name: L1 format
+        run: dart format --output=none --set-exit-if-changed .
+      - name: L3 analyze
+        run: flutter analyze
+      - name: L4 test
+        run: flutter test
+      - name: L2 build web (release)
+        run: flutter build web --release
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/')
+    concurrency:
+      group: deploy-${{ github.event.repository.name }}-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
+
+      - name: Pull image and restart container on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # 自举: 首次部署无 /home/deploy/<repo>/ 时自动建 + 每次无条件重拉 deploy 脚本
+            # (脚本修复进 master 即生效);?v= 时间戳破 raw CDN ~5min 陈旧窗口
+            set -e
+            REPO="${{ github.event.repository.name }}"
+            DEPLOY_DIR="/home/deploy/$REPO"
+            mkdir -p "$DEPLOY_DIR"
+            cd "$DEPLOY_DIR"
+            curl -fsSL "https://raw.githubusercontent.com/zcqiand/${REPO}/refs/heads/master/deploy/${REPO}.sh?v=$(date +%s)" -o "$REPO.sh"
+            chmod +x "$REPO.sh"
+            sh "$REPO.sh" "${{ secrets.DOCKER_USERNAME }}" "${{ secrets.DOCKER_PASSWORD }}" "${{ github.ref_name }}"
