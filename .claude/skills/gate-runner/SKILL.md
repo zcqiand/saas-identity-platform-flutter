@@ -33,6 +33,22 @@ L5 引用完整性   suite 拥有   语言无关   项目无权跳过
 它意味着「问题不在代码里」：缺 `stack.json`、缺依赖、门定义非法、trace.json 声称
 skip 的测试有覆盖。这些都不该由你自行「修好」——你能做的修法（改契约）恰恰是最危险的。
 
+## 跑之前：前置自检（红得冤枉先查这里）
+
+各栈门禁有前置条件，缺了不是代码红，是环境红。按栈对号：
+
+- **fastapi**：venv 已激活 + 钉版全局依赖链就位；shared 仓 unit 门还要先 export PG env（缺 = exit 2）
+- **rails**：`C:\Ruby34-x64` 不在 PATH 时先补 PATH
+- **flutter**：`PUB_HOSTED_URL` / `FLUTTER_STORAGE_BASE_URL` 指镜像——缺了跑一次 gate 会把
+  pubspec.lock 的 URL 重写成纯 URL 脏树（测试照样绿，树已经脏了）
+- **shared / contract-test**：CT 的 L5 = 全量 live（固有成本，不是卡死）；live 前先 export
+  `CONTRACT_TARGETS`，缺了 trace 复用旧账；僵尸 vitest 持锁 = 启动假死
+- **dev 栈在跑**：5101 活着 → saas-react L4 必红（端口互斥，与 e2e 串行）；dev 栈活 = full 档全家族假红
+- **假死甄别**：进程假死 = CPU 秒级 + 零 TCP 连接——先探活再决定等还是杀；隔离复跑变绿 = 丢包假红
+- **trace 秒完成**：L5 会复用 30 分钟内的旧 trace——刚改完测试却秒过，先疑复用，删旧 trace 重跑
+- **aspnetcore**：「trace.json 陈旧」红 = L4 testhost 锁住 gen-trace 二次 rebuild——
+  先手跑 gen-trace，再在窗口内重跑门禁
+
 ## 反循环
 
 同一道门连续失败 3 次 → 停下，报告：门的名字、原始输出、你试过的三种改法。不要第 4 次。

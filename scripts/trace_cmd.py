@@ -11,6 +11,9 @@
 
 硬规则：
 - trace.json 禁手写——本脚本每次全量重写；手改的内容重跑即被覆盖（AC-8）。
+- 声明折行归并（2026-10-12）：`test(`/`testWidgets(` 的名字引号不在声明行时，
+  归并后续行（上限 MAX_JOIN_LINES）直到名字闭合——长测试名被 dart format 折行
+  不再导致锚静默失效（flutter 总账 ③b 修法）。
 
 用法（.harness/stack.json trace_cmd 调用，cwd = 仓根）：
     python scripts/trace_cmd.py
@@ -31,6 +34,10 @@ OUT = ROOT / ".state" / "trace.json"
 FN_ID_RE = re.compile(r"\bM\d{2}(?:\.F\d{2}(?:\.I\d{2})?)?\b")
 # dart test 声明：test('name', ...) / testWidgets('name', ...)。
 TEST_RE = re.compile(r"""\b(?:test|testWidgets)\s*\(\s*['\"](.+?)['\"]""")
+# 声明头（可能折行：dart format 会把过长测试名折到声明下一行）。
+TEST_HEAD_RE = re.compile(r"\b(?:test|testWidgets)\s*\(")
+# 折行归并上限：名字引号在此窗口内必现，超出按无声明处理（防注释/残码拖垮扫描）。
+MAX_JOIN_LINES = 10
 
 # trace 条目里的 test 名 = 相对路径::描述（与 swift 仓 path::Class.method 同风格）。
 
@@ -54,10 +61,26 @@ def _scan_file(path: Path) -> tuple[list[dict], list[str]]:
             )
         current, order = "", []
 
-    for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    i = 0
+    while i < len(lines):
+        raw = lines[i]
+        i += 1
         if m := TEST_RE.search(raw):
             flush()
             current = m.group(1)
+        elif TEST_HEAD_RE.search(raw):
+            # 声明折行：名字引号在后续行（dart format 把过长测试名折到声明下一行）。
+            # 归并后续行直到名字闭合；折行窗口内的 // fn: 属于前一个测试（还没进新回调体）。
+            joined = raw
+            start = i
+            while i < len(lines) and i - start < MAX_JOIN_LINES:
+                joined += " " + lines[i].strip()
+                i += 1
+                if m := TEST_RE.search(joined):
+                    flush()
+                    current = m.group(1)
+                    break
         if "// fn:" in raw:
             ids = FN_ID_RE.findall(raw)
             if not ids:
