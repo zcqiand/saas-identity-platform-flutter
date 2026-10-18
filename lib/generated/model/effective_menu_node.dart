@@ -34,7 +34,7 @@ abstract class EffectiveMenuNode
   String get clientId;
 
   @BuiltValueField(wireName: r'parentId')
-  String get parentId;
+  String? get parentId;
 
   @BuiltValueField(wireName: r'title')
   String get title;
@@ -98,10 +98,12 @@ class _$EffectiveMenuNodeSerializer
       specifiedType: const FullType(String),
     );
     yield r'parentId';
-    yield serializers.serialize(
-      object.parentId,
-      specifiedType: const FullType(String),
-    );
+    yield object.parentId == null
+        ? null
+        : serializers.serialize(
+            object.parentId,
+            specifiedType: const FullType.nullable(String),
+          );
     yield r'title';
     yield serializers.serialize(
       object.title,
@@ -194,8 +196,9 @@ class _$EffectiveMenuNodeSerializer
         case r'parentId':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(String),
-          ) as String;
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
           result.parentId = valueDes;
           break;
         case r'title':

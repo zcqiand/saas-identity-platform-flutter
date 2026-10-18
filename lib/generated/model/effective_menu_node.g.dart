@@ -12,7 +12,7 @@ class _$EffectiveMenuNode extends EffectiveMenuNode {
   @override
   final String clientId;
   @override
-  final String parentId;
+  final String? parentId;
   @override
   final String title;
   @override
@@ -37,7 +37,7 @@ class _$EffectiveMenuNode extends EffectiveMenuNode {
   _$EffectiveMenuNode._({
     required this.id,
     required this.clientId,
-    required this.parentId,
+    this.parentId,
     required this.title,
     required this.type,
     this.path,
@@ -210,11 +210,7 @@ class EffectiveMenuNodeBuilder
               r'EffectiveMenuNode',
               'clientId',
             ),
-            parentId: BuiltValueNullFieldError.checkNotNull(
-              parentId,
-              r'EffectiveMenuNode',
-              'parentId',
-            ),
+            parentId: parentId,
             title: BuiltValueNullFieldError.checkNotNull(
               title,
               r'EffectiveMenuNode',
