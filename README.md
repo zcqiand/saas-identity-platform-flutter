@@ -69,6 +69,22 @@ git push origin master v0.2.1-20261010   # CI test → 镜像 → VPS → vhost 
 - 范围：M00/M01/M04；M/F 编号沿用 swift 树（同 shared BASE 双账本），便于跨仓对照。
 - UI/交互参照：`../saas-identity-platform-react`（参照实现，非基线）。
 
+## 配套书籍及章节映射
+
+> 同一案例仓后续接入其他书籍时，在此节下新增书籍小节。
+
+### 书一《Flutter 从入门到项目实践》（卷四）
+
+- 书稿定位：xr-know-019，第 28、29、30、31 章正文代码块挂本仓 `source=` 锚点
+- 配套版本：`v0.2.2-20261010`（registry 冻结 tag，代码以此为准）
+
+| 章 | 章题 | 对应源文件 |
+| :--- | :--- | :--- |
+| 28 | 案例二：SaaS 架构与多租户 | `lib/core/auth/login_page.dart` + `lib/features/tenants/tenants_list_page.dart` + `lib/features/tenants/tenant_detail_page.dart` |
+| 29 | 案例二：角色与菜单授权 | `lib/features/roles/role_list_page.dart` + `lib/features/roles/role_form_dialog.dart` + `lib/features/roles/role_detail_page.dart` + `lib/features/roles/role_menu_grant_page.dart` + `lib/features/appmenus/menu_tree_page.dart` + `lib/features/appmenus/menu_form_dialog.dart` |
+| 30 | 案例二：成员管理与应用集成 | `lib/features/members/member_list_page.dart` + `lib/features/members/member_form_dialog.dart` + `lib/features/members/member_detail_page.dart` + `lib/features/members/assign_member_roles_dialog.dart` + `lib/features/appadmin/client_list_page.dart` + `lib/features/appadmin/client_form_dialog.dart` + `lib/features/appadmin/client_detail_page.dart` + `lib/features/applications/application_list_page.dart` + `lib/features/applications/subscribe_application_dialog.dart` |
+| 31 | 案例二：联调验收与生产发布 | — |
+
 ## 快速链接
 
 - [CLAUDE.md](CLAUDE.md) — 开发约定与编码规范
