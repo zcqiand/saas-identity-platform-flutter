@@ -26,3 +26,6 @@ web/favicon.png.tmp
 .idea/
 .vscode/
 *.iml
+
+# 导出物不入库（export_handoff_family.py 生成物，同 cs-support-agent 先例）
+handoff.json
