@@ -239,8 +239,8 @@ class AdminTenantsApi {
   ///
   ///
   /// Parameters:
-  /// * [page]
-  /// * [pageSize]
+  /// * [page] - 页码，0 基（Spring Data Pageable）：首页 page=0。
+  /// * [pageSize] - 每页条数。
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

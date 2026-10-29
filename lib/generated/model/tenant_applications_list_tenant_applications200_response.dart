@@ -14,8 +14,8 @@ part 'tenant_applications_list_tenant_applications200_response.g.dart';
 ///
 /// Properties:
 /// * [items]
-/// * [page]
-/// * [pageSize]
+/// * [page] - 页码，0 基（Spring Data Pageable）：首页 page=0。
+/// * [pageSize] - 每页条数。
 /// * [total]
 @BuiltValue()
 abstract class TenantApplicationsListTenantApplications200Response
@@ -27,9 +27,11 @@ abstract class TenantApplicationsListTenantApplications200Response
   @BuiltValueField(wireName: r'items')
   BuiltList<TenantApplication> get items;
 
+  /// 页码，0 基（Spring Data Pageable）：首页 page=0。
   @BuiltValueField(wireName: r'page')
   int get page;
 
+  /// 每页条数。
   @BuiltValueField(wireName: r'pageSize')
   int get pageSize;
 

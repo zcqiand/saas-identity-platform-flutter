@@ -14,8 +14,8 @@ part 'admin_clients_list_clients200_response.g.dart';
 ///
 /// Properties:
 /// * [items]
-/// * [page]
-/// * [pageSize]
+/// * [page] - 页码，0 基（Spring Data Pageable）：首页 page=0。
+/// * [pageSize] - 每页条数。
 /// * [total]
 @BuiltValue()
 abstract class AdminClientsListClients200Response
@@ -27,9 +27,11 @@ abstract class AdminClientsListClients200Response
   @BuiltValueField(wireName: r'items')
   BuiltList<OAuthClient> get items;
 
+  /// 页码，0 基（Spring Data Pageable）：首页 page=0。
   @BuiltValueField(wireName: r'page')
   int get page;
 
+  /// 每页条数。
   @BuiltValueField(wireName: r'pageSize')
   int get pageSize;
 
