@@ -29,3 +29,6 @@ web/favicon.png.tmp
 
 # 导出物不入库（export_handoff_family.py 生成物，同 cs-support-agent 先例）
 handoff.json
+
+# 可再生件（正式区/临时区纪律：过程件进 _work/，_work 整体不入库；2026-10-24 人裁）
+_work/
