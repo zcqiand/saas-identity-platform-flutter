@@ -281,13 +281,13 @@ class TenantRolesApi {
   }
 
   /// tenantRolesListSysRoles
-  ///
+  /// 分页：page 0 基（Spring Data Pageable），首页 page&#x3D;0；pageSize 每页条数。
   ///
   /// Parameters:
   /// * [tenantId]
   /// * [clientId]
-  /// * [page] - 页码，0 基（Spring Data Pageable）：首页 page=0。
-  /// * [pageSize] - 每页条数。
+  /// * [page]
+  /// * [pageSize]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

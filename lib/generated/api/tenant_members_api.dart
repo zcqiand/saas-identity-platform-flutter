@@ -617,12 +617,12 @@ class TenantMembersApi {
   }
 
   /// tenantMembersListTenantUsers
-  ///
+  /// 分页：page 0 基（Spring Data Pageable），首页 page&#x3D;0；pageSize 每页条数。
   ///
   /// Parameters:
   /// * [tenantId]
-  /// * [page] - 页码，0 基（Spring Data Pageable）：首页 page=0。
-  /// * [pageSize] - 每页条数。
+  /// * [page]
+  /// * [pageSize]
   /// * [status]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
