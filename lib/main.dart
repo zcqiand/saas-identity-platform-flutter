@@ -26,7 +26,7 @@ class SaasFlutterApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
     return MaterialApp(
-      title: 'SaaS 身份平台',
+      title: 'SaaS 多租户多应用身份平台',
       theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
       home: switch (authState) {
         AuthRestoring() => const _Splash(),
@@ -56,7 +56,7 @@ class _Shell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SaaS 身份平台 Flutter 端'),
+        title: const Text('SaaS 多租户多应用身份平台 Flutter 端'),
         actions: [
           // 「我」入口（REQ-2026-008 M01.F01.I01）：whoami + 成员关系 +
           // 切换当前租户。

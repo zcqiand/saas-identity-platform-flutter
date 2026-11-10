@@ -49,6 +49,6 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('登录 — SaaS 身份平台 Flutter 端'), findsOneWidget);
+    expect(find.text('登录 — SaaS 多租户多应用身份平台 Flutter 端'), findsOneWidget);
   });
 }

@@ -1,11 +1,11 @@
-# CLAUDE.md — SaaS身份平台
+# CLAUDE.md — SaaS 多租户多应用身份平台
 
 > 镜像仓 + harness 门禁仓双身份。入口，不是手册。L0 门强制上限 60 行。
 > 本仓是 SaaS 多租户多应用身份平台的 Flutter 客户端变体（**Android + Web**，学习路线驱动分期交付）：需求与 API 基线 = `saas-identity-platform-shared` TypeSpec SSOT（API 只用 shared 生成物，硬规则 §4）；react 仓仅为 UI/交互参照实现，不是基线；不绑书稿。
 
 ## 1. 项目定位
 
-SaaS身份平台（`saas-identity-platform-flutter`，技术栈 `flutter`）。一句话定位见 README.md。
+SaaS 多租户多应用身份平台（`saas-identity-platform-flutter`，技术栈 `flutter`）。一句话定位见 README.md。
 
 ## 2. 铁律
 

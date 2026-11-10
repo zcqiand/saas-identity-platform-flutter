@@ -30,7 +30,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final submitting = authState is AuthSubmitting;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('登录 — SaaS 身份平台 Flutter 端')),
+      appBar: AppBar(title: const Text('登录 — SaaS 多租户多应用身份平台 Flutter 端')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),

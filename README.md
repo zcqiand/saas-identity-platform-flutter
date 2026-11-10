@@ -1,4 +1,4 @@
-# SaaS身份平台 · Flutter 端
+# SaaS 多租户多应用身份平台 · Flutter 端
 
 SaaS 多租户多应用身份平台的 Flutter 客户端（Android + Web）。学习路线驱动（roadmap.sh/flutter），需求与 API 基线 = `saas-identity-platform-shared` TypeSpec SSOT；react 仓仅为 UI/交互参照实现。
 
